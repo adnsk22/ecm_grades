@@ -933,7 +933,7 @@ ecm_pptx=phos_data[ecm_psite_ids$id,]
 # Hierarchical clustering (Supp. Figure 1 h)
 
 ```{r}
-col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon"))
+col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon4"))
 
 col_anno_pptx = HeatmapAnnotation(
   df = metadata_pptx,
@@ -1000,9 +1000,6 @@ ecm_pptx %>%
   mutate_all(~replace_na(.,NA)) %>% 
   column_to_rownames("geneSymbol") %>% 
   filter(rowSums(is.na(.))<=130) %>% 
-  t() %>% 
-  scale() %>% 
-  t() %>% 
   na.omit() %>% 
   t() %>% 
   prcomp() -> pca_data
