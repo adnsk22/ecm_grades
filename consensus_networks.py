@@ -10,7 +10,7 @@ import pandas as pd
 import networkx as nx
 from collections import Counter
 
-os.chdir("C:/Users/MONSTER/OneDrive - Koc Universitesi/THESIS/ecm_grades_codes")
+os.chdir("path/to/ecm_grades")
 
 clusters=pd.read_csv("out_data/lists/momix_clusters.csv")
 
@@ -226,7 +226,7 @@ for u, v, attrs in largest_cc_subgraph.edges(data=True):
 for u, attrs in largest_cc_subgraph.nodes(data=True):
     print(u, attrs)
 
-nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_poorest.graphml")
+nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_ecmg1.graphml")
 
 
 """ Get consensus graph for poor """
@@ -296,7 +296,7 @@ for u, v, attrs in largest_cc_subgraph.edges(data=True):
 for u, attrs in largest_cc_subgraph.nodes(data=True):
     print(u, attrs)
 
-nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_poor.graphml")
+nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_ecmg2.graphml")
 
 
 """ Get consensus graph for rich """
@@ -366,7 +366,7 @@ for u, v, attrs in largest_cc_subgraph.edges(data=True):
 for u, attrs in largest_cc_subgraph.nodes(data=True):
     print(u, attrs)
 
-nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_rich.graphml")
+nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_ecmg3.graphml")
 
 
 """ Get consensus graph for richest """
@@ -436,7 +436,7 @@ for u, v, attrs in largest_cc_subgraph.edges(data=True):
 for u, attrs in largest_cc_subgraph.nodes(data=True):
     print(u, attrs)
 
-nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_richest.graphml")
+nx.write_graphml(largest_cc_subgraph, "out_data/network_data/consensus_insol/consensus_ecmg4.graphml")
 
 
 
