@@ -1,0 +1,5623 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d19" for="edge" attr.name="in_solution" attr.type="boolean"/>
+<key id="d18" for="edge" attr.name="cost" attr.type="double"/>
+<key id="d17" for="node" attr.name="location" attr.type="double"/>
+<key id="d16" for="node" attr.name="specific_process" attr.type="double"/>
+<key id="d15" for="node" attr.name="general_process" attr.type="double"/>
+<key id="d14" for="node" attr.name="specific_function" attr.type="double"/>
+<key id="d13" for="node" attr.name="general_function" attr.type="double"/>
+<key id="d12" for="node" attr.name="Category" attr.type="double"/>
+<key id="d11" for="node" attr.name="specific_function" attr.type="string"/>
+<key id="d10" for="node" attr.name="general_function" attr.type="string"/>
+<key id="d9" for="node" attr.name="specific_process" attr.type="string"/>
+<key id="d8" for="node" attr.name="general_process" attr.type="string"/>
+<key id="d7" for="node" attr.name="location" attr.type="string"/>
+<key id="d6" for="node" attr.name="louvain_clusters" attr.type="string"/>
+<key id="d5" for="node" attr.name="betweenness" attr.type="double"/>
+<key id="d4" for="node" attr.name="degree" attr.type="long"/>
+<key id="d3" for="node" attr.name="type" attr.type="string"/>
+<key id="d2" for="node" attr.name="terminal" attr.type="boolean"/>
+<key id="d1" for="node" attr.name="Category" attr.type="string"/>
+<key id="d0" for="node" attr.name="prize" attr.type="double"/>
+<graph edgedefault="undirected"><node id="PPARG">
+  <data key="d0">5.453666666666667</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">138</data>
+  <data key="d5">0.020676585857897292</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CLEC4A">
+  <data key="d0">4.6559</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">immune system process</data>
+  <data key="d9">antigen processing and presentation</data>
+  <data key="d10">binding</data>
+  <data key="d11">carbohydrate binding</data>
+</node>
+<node id="LTBP1">
+  <data key="d0">2.5715</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.019537773295073238</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="COL17A1">
+  <data key="d0">6.8828</data>
+  <data key="d1">Collagens</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CITED2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.00019916743817842712</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="S100B">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">32</data>
+  <data key="d5">0.03552456090917629</data>
+  <data key="d6">5</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SEMA4F">
+  <data key="d0">2.8472</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">2</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular developmental process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ETS2">
+  <data key="d0">5.691475</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">25</data>
+  <data key="d5">0.009315074555604532</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="HGF">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">20</data>
+  <data key="d5">0.02086659667853777</data>
+  <data key="d6">2</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FBN1">
+  <data key="d0">2.5007999999999995</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">35</data>
+  <data key="d5">0.034362395236844666</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">developmental process</data>
+  <data key="d9">anatomical structure development</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MTA1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">76</data>
+  <data key="d5">0.04006700285924766</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RARA">
+  <data key="d0">3.3436000000000003</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">138</data>
+  <data key="d5">0.0018836870957350828</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ANXA1">
+  <data key="d0">5.5427</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">63</data>
+  <data key="d5">0.007529388715601684</data>
+  <data key="d6">5</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RFX5">
+  <data key="d0">2.81285</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">7.82693090385398e-06</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="MUC1">
+  <data key="d0">9.9679</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">41</data>
+  <data key="d5">0.0210088642762713</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="REV1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">18</data>
+  <data key="d5">0.003457595386871562</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FLNC">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">86</data>
+  <data key="d5">0.024445020443479</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SFTPB">
+  <data key="d0">2.5349000000000004</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">8</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d13">nan</data>
+  <data key="d14">nan</data>
+</node>
+<node id="S100A9">
+  <data key="d0">4.1528</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">74</data>
+  <data key="d5">0.007214371947064881</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IGFBP5">
+  <data key="d0">2.3266</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.020807018568792687</data>
+  <data key="d6">2</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SPP1">
+  <data key="d0">10.499</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">81</data>
+  <data key="d5">0.01084464493781946</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MAZ">
+  <data key="d0">6.98205</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">8</data>
+  <data key="d5">0.023527754296985066</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="CTSD">
+  <data key="d0">4.3218</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">29</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">immune system process</data>
+  <data key="d9">immune effector process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="SMAD4">
+  <data key="d0">2.6604</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">240</data>
+  <data key="d5">0.02599915543292311</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="TWIST1">
+  <data key="d0">4.847</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">33</data>
+  <data key="d5">0.0011650758590139737</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ADAM9">
+  <data key="d0">3.1802</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">13</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to chemical</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="REL">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">226</data>
+  <data key="d5">0.025380270848414807</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="MAP2K4">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">46</data>
+  <data key="d5">0.0025671122919006654</data>
+  <data key="d6">2</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">transferase</data>
+</node>
+<node id="RUNX3">
+  <data key="d0">2.9808000000000003</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">29</data>
+  <data key="d5">6.487442052716072e-05</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="EGLN1">
+  <data key="d0">2.5955</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">23</data>
+  <data key="d5">0.0</data>
+  <data key="d6">4</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">oxidoreductase</data>
+</node>
+<node id="STAT3">
+  <data key="d0">4.02646</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">213</data>
+  <data key="d5">0.04531590960199156</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SERPINF2">
+  <data key="d0">3.7803</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">18</data>
+  <data key="d5">0.006438521707185227</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">molecular function regulator</data>
+  <data key="d11">enzyme regulator</data>
+</node>
+<node id="SP1">
+  <data key="d0">4.1101625</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">258</data>
+  <data key="d5">0.06499440252785166</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IGFBP3">
+  <data key="d0">3.2763</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">39</data>
+  <data key="d5">0.018084892067289752</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PIAS1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">110</data>
+  <data key="d5">0.007471848057403056</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="DCC">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">57</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">7</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular developmental process</data>
+  <data key="d10">molecular transducer</data>
+  <data key="d11">signaling receptor</data>
+</node>
+<node id="ITIH4">
+  <data key="d0">3.1604</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">6</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to stress</data>
+  <data key="d10">molecular function regulator</data>
+  <data key="d11">enzyme regulator</data>
+</node>
+<node id="NCOA1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">76</data>
+  <data key="d5">0.0033362952330109196</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="TFAP2A">
+  <data key="d0">3.7407</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">113</data>
+  <data key="d5">0.001995003322634967</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="GRIN2A">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">30</data>
+  <data key="d5">0.0005910401937184029</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transporter</data>
+  <data key="d11">transmembrane transporter</data>
+</node>
+<node id="GATA1">
+  <data key="d0">2.770633333333333</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">61</data>
+  <data key="d5">0.0008926860192958343</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="DLG4">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">119</data>
+  <data key="d5">0.05029073569765667</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NOTCH2NL">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">244</data>
+  <data key="d5">0.013672619098443271</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="JUNB">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">51</data>
+  <data key="d5">0.0004712130577202279</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="CRLF1">
+  <data key="d0">4.4765</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">2</data>
+  <data key="d5">0.0</data>
+  <data key="d6">1</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ADAM10">
+  <data key="d0">2.1933</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">25</data>
+  <data key="d5">0.026327894064114288</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="CEBPA">
+  <data key="d0">4.555233333333334</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">109</data>
+  <data key="d5">0.005715944073645493</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular developmental process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PPARA">
+  <data key="d0">3.27895</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">47</data>
+  <data key="d5">0.0008861829966321173</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="DDIT3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">76</data>
+  <data key="d5">0.051449469048757614</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="HDAC1">
+  <data key="d0">4.6963</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">476</data>
+  <data key="d5">0.05140645550129933</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RUNX2">
+  <data key="d0">4.536233333333334</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">56</data>
+  <data key="d5">0.0009098995858402206</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="JUN">
+  <data key="d0">4.76790909090909</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">244</data>
+  <data key="d5">0.09932390015126934</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MAPK8">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">168</data>
+  <data key="d5">0.0045242516861183175</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">transferase</data>
+</node>
+<node id="KY">
+  <data key="d0">3.5401</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="MXRA5">
+  <data key="d0">6.5773</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to endogenous stimulus</data>
+  <data key="d13">nan</data>
+  <data key="d14">nan</data>
+</node>
+<node id="TNC">
+  <data key="d0">3.2416</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">14</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NFKBIA">
+  <data key="d0">6.5831</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">128</data>
+  <data key="d5">0.0016965843720244038</data>
+  <data key="d6">0</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="HCFC1">
+  <data key="d0">3.4965</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">94</data>
+  <data key="d5">0.018028218218734564</data>
+  <data key="d6">0</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EP300">
+  <data key="d0">3.14562</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">467</data>
+  <data key="d5">0.1909981962271882</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CTNND1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">49</data>
+  <data key="d5">0.014233887746728286</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="COL20A1">
+  <data key="d0">6.8372</data>
+  <data key="d1">Collagens</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">6</data>
+  <data key="d7">ER</data>
+  <data key="d8">immune system process</data>
+  <data key="d9">immune effector process</data>
+  <data key="d10">binding</data>
+  <data key="d11">carbohydrate binding</data>
+</node>
+<node id="ADAMTSL3">
+  <data key="d0">2.6803000000000003</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">6</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">organelle</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EGR2">
+  <data key="d0">2.43745</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.0</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">multicellular organismal process</data>
+  <data key="d9">multicellular organism development</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NTN1">
+  <data key="d0">3.798599999999999</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">6</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="GATA3">
+  <data key="d0">5.277266666666667</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">23</data>
+  <data key="d5">0.0003791652043158495</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="ETV4">
+  <data key="d0">7.536849999999999</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">14</data>
+  <data key="d5">0.0006595611506860019</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="PCNA">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">253</data>
+  <data key="d5">0.03467139080032887</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SDC2">
+  <data key="d0">9.7878</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">35</data>
+  <data key="d5">0.005285919280747981</data>
+  <data key="d6">2</data>
+  <data key="d7">lysosome</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">movement of cell or subcellular component</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ELANE">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">30</data>
+  <data key="d5">0.014451509559286395</data>
+  <data key="d6">2</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="THBS2">
+  <data key="d0">2.2128</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">endomembrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CEBPZ">
+  <data key="d0">3.86635</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">25</data>
+  <data key="d5">0.0004315208156765088</data>
+  <data key="d6">1</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="F2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">19</data>
+  <data key="d5">0.03546250562348615</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PLXDC2">
+  <data key="d0">2.0607</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d15">nan</data>
+  <data key="d16">nan</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="S100A1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">26</data>
+  <data key="d5">3.522118906734291e-05</data>
+  <data key="d6">5</data>
+  <data key="d7">ER</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="S100A6">
+  <data key="d0">4.1907</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">22</data>
+  <data key="d5">0.020507593673823724</data>
+  <data key="d6">5</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="VTN">
+  <data key="d0">4.514200000000001</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">90</data>
+  <data key="d5">0.0234803810191905</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IL16">
+  <data key="d0">5.591600000000001</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">32</data>
+  <data key="d5">0.0013618300706212797</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="POLH">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">20</data>
+  <data key="d5">0.0</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to stress</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SEMA4C">
+  <data key="d0">3.5443</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.011632360274583432</data>
+  <data key="d6">3</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular developmental process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="BTRC">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">173</data>
+  <data key="d5">0.002721249846793719</data>
+  <data key="d6">0</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">transferase</data>
+</node>
+<node id="SERPINA1">
+  <data key="d0">3.3708</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">36</data>
+  <data key="d5">0.01969237613431253</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">secretion by cell</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FST">
+  <data key="d0">7.8924</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">16</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="STAT1">
+  <data key="d0">3.461333333333333</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">170</data>
+  <data key="d5">0.00189292558647253</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PARK7">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">63</data>
+  <data key="d5">0.02298146048723861</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MET">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">121</data>
+  <data key="d5">0.04129872406331833</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">transferase</data>
+</node>
+<node id="CEBPB">
+  <data key="d0">5.045766666666666</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">88</data>
+  <data key="d5">0.020188267124366138</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CDC20">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">129</data>
+  <data key="d5">0.016109132476976904</data>
+  <data key="d6">4</data>
+  <data key="d7">cytoskeleton</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell cycle</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SERPINA10">
+  <data key="d0">3.123299999999998</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">0</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">ion binding</data>
+</node>
+<node id="NFIL3">
+  <data key="d0">2.94945</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="CREB1">
+  <data key="d0">3.44122</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">105</data>
+  <data key="d5">0.004232645139648642</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CCNA2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">81</data>
+  <data key="d5">0.0016105194654467132</data>
+  <data key="d6">4</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RXRA">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">124</data>
+  <data key="d5">0.013967359405196078</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="HDAC3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">204</data>
+  <data key="d5">0.025013346148203185</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PSEN1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">111</data>
+  <data key="d5">0.011299435028248588</data>
+  <data key="d6">1</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="POU2F1">
+  <data key="d0">5.616750000000001</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">60</data>
+  <data key="d5">0.008642716331246926</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="ATF3">
+  <data key="d0">2.73175</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">54</data>
+  <data key="d5">0.002218755105079055</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FN1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">754</data>
+  <data key="d5">0.1793957683214729</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="STAT6">
+  <data key="d0">3.419866666666666</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">64</data>
+  <data key="d5">0.018315339199464983</data>
+  <data key="d6">1</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ELFN2">
+  <data key="d0">4.571899999999999</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">0</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">molecular function regulator</data>
+  <data key="d11">enzyme regulator</data>
+</node>
+<node id="JUND">
+  <data key="d0">2.36895</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">44</data>
+  <data key="d5">0.0050438332698965966</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ADAM12">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.04089005730790297</data>
+  <data key="d6">2</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">syncytium formation</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RELA">
+  <data key="d0">3.767578947368421</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">355</data>
+  <data key="d5">0.06790988467615824</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IGF1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.0012842492961058602</data>
+  <data key="d6">2</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PAX5">
+  <data key="d0">6.07205</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">14</data>
+  <data key="d5">5.524892402720457e-05</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">multicellular organismal process</data>
+  <data key="d9">multicellular organism development</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="ATF2">
+  <data key="d0">2.75465</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">208</data>
+  <data key="d5">0.05810237550147064</data>
+  <data key="d6">7</data>
+  <data key="d7">mitochondria</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="HSPG2">
+  <data key="d0">2.4267</data>
+  <data key="d1">Proteoglycans</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">39</data>
+  <data key="d5">0.03648318847353185</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">organic substance metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="LEF1">
+  <data key="d0">4.529</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">46</data>
+  <data key="d5">0.0011865473982652986</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EGR1">
+  <data key="d0">2.7718142857142856</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">27</data>
+  <data key="d5">2.7114724916922722e-05</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="KLF4">
+  <data key="d0">2.532</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">23</data>
+  <data key="d5">2.5739766007890814e-05</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NFIC">
+  <data key="d0">3.7707</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">16</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="FEN1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">36</data>
+  <data key="d5">0.0014802766941687702</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="S100A11">
+  <data key="d0">3.5128000000000004</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.026041199413430898</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FOS">
+  <data key="d0">5.43848</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">176</data>
+  <data key="d5">0.04236924153622171</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to chemical</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CDH5">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">25</data>
+  <data key="d5">0.001965165015921152</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="TRIB3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">35</data>
+  <data key="d5">0.019992028692870235</data>
+  <data key="d6">7</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MAD2L2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">34</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">3</data>
+  <data key="d7">cytoskeleton</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PRKCD">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">80</data>
+  <data key="d5">0.013193883919697086</data>
+  <data key="d6">1</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">transferase</data>
+</node>
+<node id="DNMT3A">
+  <data key="d0">2.8287500000000003</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">52</data>
+  <data key="d5">0.00012142494179687755</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IRF1">
+  <data key="d0">3.4787</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">37</data>
+  <data key="d5">0.0003235296293199928</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="SMAD3">
+  <data key="d0">3.070533333333333</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">363</data>
+  <data key="d5">0.11042830626923146</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SAP30">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">38</data>
+  <data key="d5">0.0002511905039832621</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="LAMB2">
+  <data key="d0">2.6338</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.0</data>
+  <data key="d6">0</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">structural molecule</data>
+  <data key="d14">nan</data>
+</node>
+<node id="ANXA6">
+  <data key="d0">2.3599</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">30</data>
+  <data key="d5">0.0</data>
+  <data key="d6">5</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="S100P">
+  <data key="d0">2.2311000000000005</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">20</data>
+  <data key="d5">0.0</data>
+  <data key="d6">5</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell activation</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SP3">
+  <data key="d0">3.5840666666666667</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">33</data>
+  <data key="d5">3.156207212605492e-05</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="S100A8">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">44</data>
+  <data key="d5">0.0009386823687680037</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to stress</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SKI">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">46</data>
+  <data key="d5">0.001320650903662684</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PPP1CA">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">309</data>
+  <data key="d5">0.04392475900485688</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="HIF1A">
+  <data key="d0">3.37895</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">136</data>
+  <data key="d5">0.0223884800955836</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CLCF1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.011299435028248588</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="LTBP2">
+  <data key="d0">5.574299999999999</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">5</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="IGFBP7">
+  <data key="d0">2.8974</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">15</data>
+  <data key="d5">0.00022608648982275356</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CTSH">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">5</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">8</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="ANXA2">
+  <data key="d0">5.348000000000001</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">98</data>
+  <data key="d5">0.07492135436302334</data>
+  <data key="d6">5</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PIAS3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">55</data>
+  <data key="d5">0.014652083897226553</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="GRB2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">705</data>
+  <data key="d5">0.30349681246629606</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="TGM2">
+  <data key="d0">5.8006</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">89</data>
+  <data key="d5">0.042920091908553525</data>
+  <data key="d6">2</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EIF1B">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">168</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">5</data>
+  <data key="d17">nan</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="GDF9">
+  <data key="d0">6.0338</data>
+  <data key="d1">Secreted Factors</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">47</data>
+  <data key="d5">0.008494315254605582</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CHD4">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">101</data>
+  <data key="d5">0.03457906105562184</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="FGB">
+  <data key="d0">3.6293</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">21</data>
+  <data key="d5">0.0</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="MMP9">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">41</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="PAPPA">
+  <data key="d0">10.1422</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">11</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="TP53">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">872</data>
+  <data key="d5">0.12382144811885006</data>
+  <data key="d6">4</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SERPINH1">
+  <data key="d0">6.8855</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">83</data>
+  <data key="d5">0.0021178681952680966</data>
+  <data key="d6">4</data>
+  <data key="d7">ER</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to stress</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein-containing complex binding</data>
+</node>
+<node id="PLXNB1">
+  <data key="d0">2.4031</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">21</data>
+  <data key="d5">0.006218388118693282</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">molecular transducer</data>
+  <data key="d11">signaling receptor</data>
+</node>
+<node id="ARHGEF11">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">24</data>
+  <data key="d5">0.005164993462753394</data>
+  <data key="d6">3</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NFKB1">
+  <data key="d0">3.723231578947368</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">169</data>
+  <data key="d5">0.011591912953188543</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FLI1">
+  <data key="d0">5.3923</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">21</data>
+  <data key="d5">0.0003412426520552281</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="PRG4">
+  <data key="d0">3.4413</data>
+  <data key="d1">Proteoglycans</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">1</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cell proliferation</data>
+  <data key="d16">nan</data>
+  <data key="d10">structural molecule</data>
+  <data key="d11">extracellular matrix structural constituent</data>
+</node>
+<node id="VCAN">
+  <data key="d0">4.7946</data>
+  <data key="d1">Proteoglycans</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">26</data>
+  <data key="d5">0.024574997651920723</data>
+  <data key="d6">2</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell recognition</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SELL">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.03980786841363764</data>
+  <data key="d6">2</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">immune system process</data>
+  <data key="d9">leukocyte migration</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NCOR2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">109</data>
+  <data key="d5">0.004430900434918973</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CTNNB1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">363</data>
+  <data key="d5">0.05277868089289955</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SEMA4B">
+  <data key="d0">4.3219</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">4</data>
+  <data key="d5">0.0002566115203477841</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular developmental process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SIRT1">
+  <data key="d0">3.2836</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">217</data>
+  <data key="d5">0.007893898071712832</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="SOX2">
+  <data key="d0">4.23465</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">335</data>
+  <data key="d5">0.0060530200385919735</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">developmental process</data>
+  <data key="d9">anatomical structure development</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="ANXA3">
+  <data key="d0">4.3317</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">13</data>
+  <data key="d5">0.0007810647603547011</data>
+  <data key="d6">7</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">ion binding</data>
+</node>
+<node id="ETS1">
+  <data key="d0">5.246614285714285</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">95</data>
+  <data key="d5">0.005153069139749753</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ADAM17">
+  <data key="d0">4.247199999999999</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">23</data>
+  <data key="d5">0.015691074706228107</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">catalytic</data>
+  <data key="d11">hydrolase</data>
+</node>
+<node id="SPOCK2">
+  <data key="d0">4.164000000000001</data>
+  <data key="d1">Proteoglycans</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">ion binding</data>
+</node>
+<node id="CREBBP">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">342</data>
+  <data key="d5">0.039126785089067216</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PLXNB3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.011973638896715818</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="XRN1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">71</data>
+  <data key="d5">0.023527754296985066</data>
+  <data key="d6">8</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="VDR">
+  <data key="d0">3.1058</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">100</data>
+  <data key="d5">0.036209275268318485</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="MAD2L1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">47</data>
+  <data key="d5">0.010570100524727346</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CIITA">
+  <data key="d0">3.8622666666666654</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">27</data>
+  <data key="d5">0.0004542373846273388</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EMCN">
+  <data key="d0">6.8563</data>
+  <data key="d1">ECM-affiliated Proteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">2</data>
+  <data key="d5">0.0</data>
+  <data key="d6">2</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d15">nan</data>
+  <data key="d16">nan</data>
+  <data key="d13">nan</data>
+  <data key="d14">nan</data>
+</node>
+<node id="HDAC2">
+  <data key="d0">3.4018</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">295</data>
+  <data key="d5">0.016520264622214117</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FGA">
+  <data key="d0">6.1113</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">20</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="POU5F1">
+  <data key="d0">5.737450000000001</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">29</data>
+  <data key="d5">7.079547276192736e-05</data>
+  <data key="d6">7</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">developmental process</data>
+  <data key="d9">maintenance of cell number</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="SERPINB6">
+  <data key="d0">5.935</data>
+  <data key="d1">ECM Regulators</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">9</data>
+  <data key="d5">0.0</data>
+  <data key="d6">5</data>
+  <data key="d7">vesicle</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell activation</data>
+  <data key="d10">molecular function regulator</data>
+  <data key="d11">enzyme regulator</data>
+</node>
+<node id="LAMA4">
+  <data key="d0">2.7494</data>
+  <data key="d1">ECM Glycoproteins</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PTPN6">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">111</data>
+  <data key="d5">0.02547090082065297</data>
+  <data key="d6">1</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FOSL2">
+  <data key="d0">3.428</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">22</data>
+  <data key="d5">0.0</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="SRF">
+  <data key="d0">3.16675</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">77</data>
+  <data key="d5">0.002601558445124277</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">developmental process</data>
+  <data key="d9">anatomical structure development</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="ATF4">
+  <data key="d0">2.5549</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">77</data>
+  <data key="d5">0.07575324983148228</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">organic cyclic compound binding</data>
+</node>
+<node id="MYB">
+  <data key="d0">3.848</data>
+  <data key="d1">TF</data>
+  <data key="d2">True</data>
+  <data key="d3">protein</data>
+  <data key="d4">72</data>
+  <data key="d5">0.008758461891075885</data>
+  <data key="d6">7</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="APH1A">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">17</data>
+  <data key="d5">0.017864561723054638</data>
+  <data key="d6">2</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="FAM9B">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">118</data>
+  <data key="d5">0.011834319526627219</data>
+  <data key="d6">6</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">reproduction</data>
+  <data key="d9">sexual reproduction</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PLAT">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">19</data>
+  <data key="d5">0.013267214184453669</data>
+  <data key="d6">5</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="TP63">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">128</data>
+  <data key="d5">0.0229278817000104</data>
+  <data key="d6">3</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NFKBIZ">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">3</data>
+  <data key="d5">0.0</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CNTFR">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">15</data>
+  <data key="d5">0.013566709190124237</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PTPN3">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">24</data>
+  <data key="d5">0.02291641588935358</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="EFEMP2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">55</data>
+  <data key="d5">0.0024664336477523284</data>
+  <data key="d6">3</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular component organization</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="OS9">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">52</data>
+  <data key="d5">0.0018461587267199673</data>
+  <data key="d6">4</data>
+  <data key="d7">ER</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="DLG1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">88</data>
+  <data key="d5">0.0046122197907912214</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="RXRG">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">33</data>
+  <data key="d5">0.001356586105041718</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">transcription regulator</data>
+  <data key="d11">DNA-binding transcription factor</data>
+</node>
+<node id="RNF187">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">6</data>
+  <data key="d5">0.03508030431107354</data>
+  <data key="d6">8</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="LIFR">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">13</data>
+  <data key="d5">0.0014184579640051766</data>
+  <data key="d6">1</data>
+  <data key="d7">extracellular</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">molecular transducer</data>
+  <data key="d11">signaling receptor</data>
+</node>
+<node id="DNMT3L">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.0</data>
+  <data key="d6">4</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular process involved in reproduction in multicellular organism</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="KCND2">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">12</data>
+  <data key="d5">0.011074883602356131</data>
+  <data key="d6">3</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cell communication</data>
+  <data key="d10">transporter</data>
+  <data key="d11">transmembrane transporter</data>
+</node>
+<node id="IL4R">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">23</data>
+  <data key="d5">0.0</data>
+  <data key="d6">1</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">response to stimulus</data>
+  <data key="d9">response to chemical</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="PPP1R13L">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">11</data>
+  <data key="d5">0.0014283080722000624</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">multicellular organismal process</data>
+  <data key="d9">multicellular organism development</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CREBZF">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">15</data>
+  <data key="d5">0.0006748384175019326</data>
+  <data key="d6">0</data>
+  <data key="d7">nucleus</data>
+  <data key="d8">biological regulation</data>
+  <data key="d9">regulation of biological process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="CCDC106">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">13</data>
+  <data key="d5">0.023527754296985066</data>
+  <data key="d6">6</data>
+  <data key="d7">cytoplasm</data>
+  <data key="d15">nan</data>
+  <data key="d16">nan</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="NCSTN">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">84</data>
+  <data key="d5">0.015506464047355858</data>
+  <data key="d6">2</data>
+  <data key="d7">plasma_membrane</data>
+  <data key="d8">metabolic process</data>
+  <data key="d9">nitrogen compound metabolic process</data>
+  <data key="d10">binding</data>
+  <data key="d11">protein binding</data>
+</node>
+<node id="UBR1">
+  <data key="d0">0.0</data>
+  <data key="d12">nan</data>
+  <data key="d2">False</data>
+  <data key="d3">protein</data>
+  <data key="d4">47</data>
+  <data key="d5">0.012129328469337144</data>
+  <data key="d6">7</data>
+  <data key="d7">protein complex</data>
+  <data key="d8">cellular process</data>
+  <data key="d9">cellular response to stimulus</data>
+  <data key="d10">binding</data>
+  <data key="d11">ion binding</data>
+</node>
+<edge source="PPARG" target="MUC1">
+  <data key="d18">0.388868</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="NCOR2">
+  <data key="d18">0.0770205</data>
+</edge>
+<edge source="PPARG" target="NFKB1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PPARG" target="CEBPB">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="PPARG" target="SERPINH1">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="CREBBP">
+  <data key="d18">0.116066</data>
+</edge>
+<edge source="PPARG" target="JUN">
+  <data key="d18">0.690083</data>
+</edge>
+<edge source="PPARG" target="NCOA1">
+  <data key="d18">0.0251322</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="CIITA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PPARG" target="JUND">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="PPARG" target="RELA">
+  <data key="d18">0.123965</data>
+</edge>
+<edge source="PPARG" target="EP300">
+  <data key="d18">0.0429005</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="TFAP2A">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="PPARG" target="KLF4">
+  <data key="d18">0.537305</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="RFX5">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PPARG" target="HDAC1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PPARG" target="RXRA">
+  <data key="d18">0.0185164</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARG" target="HDAC3">
+  <data key="d18">0.159791</data>
+</edge>
+<edge source="PPARG" target="VDR">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PPARG" target="SMAD3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PPARG" target="PIAS1">
+  <data key="d18">0.537305</data>
+</edge>
+<edge source="PPARG" target="CTNNB1">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="PPARG" target="STAT6">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PPARG" target="SP1">
+  <data key="d18">0.214171</data>
+</edge>
+<edge source="PPARG" target="RXRG">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CLEC4A" target="PTPN6">
+  <data key="d18">0.830932</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LTBP1" target="IGFBP3">
+  <data key="d18">0.763579</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LTBP1" target="FN1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="LTBP1" target="FBN1">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="LTBP1" target="TGM2">
+  <data key="d18">0.85922</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="COL17A1" target="CTNND1">
+  <data key="d18">0.458237</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CITED2" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CITED2" target="EP300">
+  <data key="d18">0.0877233</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CITED2" target="TFAP2A">
+  <data key="d18">0.326019</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CITED2" target="HIF1A">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CITED2" target="SMAD3">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="S100B" target="ANXA6">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="S100B" target="TP53">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="S100B" target="S100P">
+  <data key="d18">0.392016</data>
+</edge>
+<edge source="S100B" target="S100A1">
+  <data key="d18">0.0876263</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100B" target="S100A11">
+  <data key="d18">0.369885</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100B" target="S100A6">
+  <data key="d18">0.246307</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SEMA4F" target="DLG4">
+  <data key="d18">0.73985</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="TWIST1">
+  <data key="d18">0.409355</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="POU5F1">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ETS2" target="GATA3">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="ETS2" target="CREBBP">
+  <data key="d18">0.222954</data>
+</edge>
+<edge source="ETS2" target="JUN">
+  <data key="d18">0.413127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="EP300">
+  <data key="d18">0.266572</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="ETS1">
+  <data key="d18">0.542247</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS2" target="FOS">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HGF" target="SDC2">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HGF" target="HSPG2">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HGF" target="VTN">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HGF" target="MET">
+  <data key="d18">0.0715013</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HGF" target="FN1">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="HGF" target="TNC">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FBN1" target="VCAN">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FBN1" target="IGFBP7">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FBN1" target="IGFBP3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FBN1" target="HSPG2">
+  <data key="d18">0.520073</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FBN1" target="IGFBP5">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FBN1" target="FN1">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="FBN1" target="EFEMP2">
+  <data key="d18">0.32463</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MTA1" target="NOTCH2NL">
+  <data key="d18">0.392016</data>
+</edge>
+<edge source="MTA1" target="TP53">
+  <data key="d18">0.174133</data>
+</edge>
+<edge source="MTA1" target="HDAC2">
+  <data key="d18">0.0448072</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MTA1" target="JUN">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="MTA1" target="GRB2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="MTA1" target="EP300">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MTA1" target="HIF1A">
+  <data key="d18">0.289938</data>
+</edge>
+<edge source="MTA1" target="HDAC1">
+  <data key="d18">0.0433046</data>
+</edge>
+<edge source="MTA1" target="SOX2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="MTA1" target="PARK7">
+  <data key="d18">0.332937</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MTA1" target="CEBPA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MTA1" target="CHD4">
+  <data key="d18">0.221602</data>
+</edge>
+<edge source="RARA" target="NCOR2">
+  <data key="d18">0.0465326</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RARA" target="HDAC2">
+  <data key="d18">0.378985</data>
+</edge>
+<edge source="RARA" target="POU2F1">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="RARA" target="CREBBP">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="RARA" target="NCOA1">
+  <data key="d18">0.0489447</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RARA" target="SKI">
+  <data key="d18">0.378985</data>
+</edge>
+<edge source="RARA" target="EP300">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="RARA" target="HDAC1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RARA" target="RXRA">
+  <data key="d18">0.0237706</data>
+</edge>
+<edge source="RARA" target="HDAC3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RARA" target="CEBPA">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="RARA" target="FN1">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="RARA" target="SP1">
+  <data key="d18">0.227185</data>
+</edge>
+<edge source="RARA" target="SIRT1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="RARA" target="RXRG">
+  <data key="d18">0.123848</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ANXA1" target="NFKBIA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ANXA1" target="ATF2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ANXA1" target="RELA">
+  <data key="d18">0.475767</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ANXA1" target="S100A11">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ANXA1" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ANXA1" target="TGM2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="RFX5" target="HDAC2">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="RFX5" target="CIITA">
+  <data key="d18">0.244854</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MUC1" target="TP53">
+  <data key="d18">0.429349</data>
+</edge>
+<edge source="MUC1" target="CEBPB">
+  <data key="d18">0.537305</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MUC1" target="JUN">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MUC1" target="GRB2">
+  <data key="d18">0.328233</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MUC1" target="EP300">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MUC1" target="HIF1A">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MUC1" target="PRKCD">
+  <data key="d18">0.388868</data>
+</edge>
+<edge source="MUC1" target="CTNND1">
+  <data key="d18">0.429349</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MUC1" target="MET">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MUC1" target="CTNNB1">
+  <data key="d18">0.0472643</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="REV1" target="MAD2L2">
+  <data key="d18">0.0376229</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="REV1" target="PCNA">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="REV1" target="POLH">
+  <data key="d18">0.0501302</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="REV1" target="RELA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FLNC" target="KY">
+  <data key="d18">0.73985</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FLNC" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FLNC" target="MAP2K4">
+  <data key="d18">0.398358</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FLNC" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FLNC" target="TP63">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FLNC" target="KCND2">
+  <data key="d18">0.458237</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SFTPB" target="CTSH">
+  <data key="d18">0.85922</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100A9" target="VTN">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="S100A9" target="S100A8">
+  <data key="d18">0.13909</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100A9" target="NCSTN">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="IGFBP5" target="IGF1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="IGFBP5" target="ADAM12">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="IGFBP5" target="VTN">
+  <data key="d18">0.549451</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGFBP5" target="SPP1">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGFBP5" target="FN1">
+  <data key="d18">0.717078</data>
+</edge>
+<edge source="SPP1" target="F2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SPP1" target="NCSTN">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="MAZ" target="JUN">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MAZ" target="DCC">
+  <data key="d18">0.259007</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MAZ" target="FOS">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CTSD" target="IGFBP3">
+  <data key="d18">0.85922</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CTSD" target="FN1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="SMAD4" target="CEBPB">
+  <data key="d18">0.263308</data>
+</edge>
+<edge source="SMAD4" target="ATF2">
+  <data key="d18">0.369192</data>
+</edge>
+<edge source="SMAD4" target="CREBBP">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="SMAD4" target="JUN">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="SMAD4" target="PIAS3">
+  <data key="d18">0.441751</data>
+</edge>
+<edge source="SMAD4" target="SERPINA1">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SMAD4" target="SKI">
+  <data key="d18">0.0249355</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SMAD4" target="JUND">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="SMAD4" target="RELA">
+  <data key="d18">0.492989</data>
+</edge>
+<edge source="SMAD4" target="LEF1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SMAD4" target="EP300">
+  <data key="d18">0.120001</data>
+</edge>
+<edge source="SMAD4" target="HDAC1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SMAD4" target="JUNB">
+  <data key="d18">0.333801</data>
+</edge>
+<edge source="SMAD4" target="SMAD3">
+  <data key="d18">0.01038</data>
+</edge>
+<edge source="SMAD4" target="PIAS1">
+  <data key="d18">0.274926</data>
+</edge>
+<edge source="SMAD4" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SMAD4" target="CEBPA">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SMAD4" target="FN1">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="SMAD4" target="BTRC">
+  <data key="d18">0.144906</data>
+</edge>
+<edge source="SMAD4" target="SP1">
+  <data key="d18">0.141656</data>
+</edge>
+<edge source="TWIST1" target="NFKB1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TWIST1" target="TP53">
+  <data key="d18">0.243823</data>
+</edge>
+<edge source="TWIST1" target="HDAC2">
+  <data key="d18">0.472309</data>
+</edge>
+<edge source="TWIST1" target="RELA">
+  <data key="d18">0.410771</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TWIST1" target="EP300">
+  <data key="d18">0.441751</data>
+</edge>
+<edge source="TWIST1" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="TWIST1" target="HDAC3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="TWIST1" target="CHD4">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ADAM9" target="MAD2L2">
+  <data key="d18">0.281077</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ADAM9" target="PRKCD">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="REL" target="MAD2L2">
+  <data key="d18">0.392016</data>
+</edge>
+<edge source="REL" target="NFKB1">
+  <data key="d18">0.318828</data>
+</edge>
+<edge source="REL" target="NFKBIA">
+  <data key="d18">0.298244</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="REL" target="CREBBP">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="REL" target="RELA">
+  <data key="d18">0.118504</data>
+</edge>
+<edge source="REL" target="GRB2">
+  <data key="d18">0.443583</data>
+</edge>
+<edge source="REL" target="EP300">
+  <data key="d18">0.289938</data>
+</edge>
+<edge source="REL" target="HDAC1">
+  <data key="d18">0.73224</data>
+</edge>
+<edge source="REL" target="SRF">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="REL" target="COL20A1">
+  <data key="d18">0.443583</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="REL" target="SP1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="REL" target="MAPK8">
+  <data key="d18">0.432458</data>
+</edge>
+<edge source="MAP2K4" target="JUN">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="MAP2K4" target="SIRT1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="MAP2K4" target="MAPK8">
+  <data key="d18">0.042336</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RUNX3" target="HDAC2">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="RUNX3" target="EP300">
+  <data key="d18">0.520073</data>
+</edge>
+<edge source="RUNX3" target="HDAC1">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="RUNX3" target="SMAD3">
+  <data key="d18">0.410771</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RUNX3" target="CTNNB1">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="EGLN1" target="HIF1A">
+  <data key="d18">0.11093</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EGLN1" target="OS9">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="STAT3" target="NFKB1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="STAT3" target="GATA1">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="STAT3" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT3" target="CEBPB">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT3" target="CREBBP">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="STAT3" target="JUN">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="STAT3" target="NCOA1">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="STAT3" target="PIAS3">
+  <data key="d18">0.120196</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT3" target="RUNX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT3" target="LAMB2">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT3" target="RELA">
+  <data key="d18">0.249941</data>
+</edge>
+<edge source="STAT3" target="EP300">
+  <data key="d18">0.0697257</data>
+</edge>
+<edge source="STAT3" target="HIF1A">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="STAT3" target="HDAC1">
+  <data key="d18">0.209129</data>
+</edge>
+<edge source="STAT3" target="PPP1CA">
+  <data key="d18">0.832846</data>
+</edge>
+<edge source="STAT3" target="PRKCD">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="STAT3" target="HDAC3">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="STAT3" target="MET">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT3" target="STAT1">
+  <data key="d18">0.298244</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT3" target="STAT6">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="STAT3" target="SP1">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="STAT3" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT3" target="MAPK8">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="STAT3" target="NFKBIZ">
+  <data key="d18">0.344603</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SERPINF2" target="ELANE">
+  <data key="d18">0.376967</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SERPINF2" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SERPINF2" target="TGM2">
+  <data key="d18">0.794225</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="ANXA2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP1" target="NCOR2">
+  <data key="d18">0.398358</data>
+</edge>
+<edge source="SP1" target="NFKB1">
+  <data key="d18">0.286822</data>
+</edge>
+<edge source="SP1" target="GATA1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SP1" target="TP53">
+  <data key="d18">0.0448072</data>
+</edge>
+<edge source="SP1" target="HDAC2">
+  <data key="d18">0.0581152</data>
+</edge>
+<edge source="SP1" target="CEBPB">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="SP1" target="POU2F1">
+  <data key="d18">0.173236</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="GATA3">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="CREBBP">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="SP1" target="HCFC1">
+  <data key="d18">0.275217</data>
+</edge>
+<edge source="SP1" target="JUN">
+  <data key="d18">0.243823</data>
+</edge>
+<edge source="SP1" target="RELA">
+  <data key="d18">0.117085</data>
+</edge>
+<edge source="SP1" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP1" target="EP300">
+  <data key="d18">0.0264913</data>
+</edge>
+<edge source="SP1" target="TFAP2A">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SP1" target="KLF4">
+  <data key="d18">0.364353</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="HIF1A">
+  <data key="d18">0.233609</data>
+</edge>
+<edge source="SP1" target="HDAC1">
+  <data key="d18">0.0160931</data>
+</edge>
+<edge source="SP1" target="ETS1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="SP1" target="RXRA">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="SP1" target="PRKCD">
+  <data key="d18">0.363275</data>
+</edge>
+<edge source="SP1" target="SRF">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SP1" target="HDAC3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP1" target="SMAD3">
+  <data key="d18">0.0929716</data>
+</edge>
+<edge source="SP1" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP1" target="SP3">
+  <data key="d18">0.111007</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="CCNA2">
+  <data key="d18">0.243823</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SP1" target="BTRC">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SP1" target="MAPK8">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="SP1" target="EGR1">
+  <data key="d18">0.443981</data>
+</edge>
+<edge source="SP1" target="PPP1R13L">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="IGFBP3" target="IGF1">
+  <data key="d18">0.0968975</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGFBP3" target="ADAM12">
+  <data key="d18">0.333363</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGFBP3" target="RXRA">
+  <data key="d18">0.414959</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGFBP3" target="FN1">
+  <data key="d18">0.290969</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PIAS1" target="DNMT3A">
+  <data key="d18">0.201508</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PIAS1" target="CREB1">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="PIAS1" target="MYB">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="PIAS1" target="TP53">
+  <data key="d18">0.179205</data>
+</edge>
+<edge source="PIAS1" target="CREBBP">
+  <data key="d18">0.763579</data>
+</edge>
+<edge source="PIAS1" target="JUN">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="PIAS1" target="RELA">
+  <data key="d18">0.765937</data>
+</edge>
+<edge source="PIAS1" target="TFAP2A">
+  <data key="d18">0.63215</data>
+</edge>
+<edge source="PIAS1" target="PPP1CA">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="PIAS1" target="FLI1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="PIAS1" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PIAS1" target="SP3">
+  <data key="d18">0.419331</data>
+</edge>
+<edge source="PIAS1" target="CEBPA">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="PIAS1" target="STAT1">
+  <data key="d18">0.0633705</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DCC" target="NTN1">
+  <data key="d18">0.199395</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ITIH4" target="GRB2">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ITIH4" target="FN1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ITIH4" target="TP63">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NCOA1" target="PPARA">
+  <data key="d18">0.197174</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NCOA1" target="NFKB1">
+  <data key="d18">0.376967</data>
+</edge>
+<edge source="NCOA1" target="TP53">
+  <data key="d18">0.458237</data>
+</edge>
+<edge source="NCOA1" target="CREBBP">
+  <data key="d18">0.185234</data>
+</edge>
+<edge source="NCOA1" target="JUN">
+  <data key="d18">0.24053</data>
+</edge>
+<edge source="NCOA1" target="CIITA">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="NCOA1" target="EP300">
+  <data key="d18">0.318238</data>
+</edge>
+<edge source="NCOA1" target="HIF1A">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="NCOA1" target="RXRA">
+  <data key="d18">0.0571239</data>
+</edge>
+<edge source="NCOA1" target="VDR">
+  <data key="d18">0.107499</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NCOA1" target="FOS">
+  <data key="d18">0.217781</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NCOA1" target="STAT6">
+  <data key="d18">0.0831664</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TFAP2A" target="DNMT3A">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="TFAP2A" target="TP53">
+  <data key="d18">0.381977</data>
+</edge>
+<edge source="TFAP2A" target="EP300">
+  <data key="d18">0.472754</data>
+</edge>
+<edge source="TFAP2A" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GRIN2A" target="DLG4">
+  <data key="d18">0.0823466</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GRIN2A" target="IL16">
+  <data key="d18">0.472754</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GATA1" target="CREBBP">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="GATA1" target="SKI">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GATA1" target="HDAC1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GATA1" target="FLI1">
+  <data key="d18">0.201343</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GATA1" target="HDAC3">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="DLG4" target="SEMA4C">
+  <data key="d18">0.398358</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DLG4" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="DLG4" target="SEMA4B">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="DLG4" target="KCND2">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="DLG4" target="DLG1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NOTCH2NL" target="ELANE">
+  <data key="d18">0.369192</data>
+</edge>
+<edge source="NOTCH2NL" target="SEMA4C">
+  <data key="d18">0.392016</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NOTCH2NL" target="ADAMTSL3">
+  <data key="d18">0.392016</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUNB" target="ATF2">
+  <data key="d18">0.552121</data>
+</edge>
+<edge source="JUNB" target="ATF4">
+  <data key="d18">0.536542</data>
+</edge>
+<edge source="JUNB" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="JUNB" target="JUN">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="JUNB" target="EP300">
+  <data key="d18">0.243823</data>
+</edge>
+<edge source="JUNB" target="FOSL2">
+  <data key="d18">0.348018</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUNB" target="DDIT3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="JUNB" target="SMAD3">
+  <data key="d18">0.458237</data>
+</edge>
+<edge source="JUNB" target="ATF3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="JUNB" target="FOS">
+  <data key="d18">0.077143</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUNB" target="MAPK8">
+  <data key="d18">0.460565</data>
+</edge>
+<edge source="CRLF1" target="CLCF1">
+  <data key="d18">0.50668</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CRLF1" target="CNTFR">
+  <data key="d18">0.830932</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ADAM10" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ADAM10" target="MAD2L1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ADAM10" target="DLG1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPA" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPA" target="CEBPB">
+  <data key="d18">0.317513</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CEBPA" target="ATF2">
+  <data key="d18">0.444259</data>
+</edge>
+<edge source="CEBPA" target="ATF4">
+  <data key="d18">0.484455</data>
+</edge>
+<edge source="CEBPA" target="CREBBP">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CEBPA" target="JUN">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPA" target="EP300">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CEBPA" target="HDAC1">
+  <data key="d18">0.290357</data>
+</edge>
+<edge source="CEBPA" target="DDIT3">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CEBPA" target="VDR">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPA" target="SMAD3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CEBPA" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPA" target="ATF3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CEBPA" target="FOS">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CEBPA" target="MAPK8">
+  <data key="d18">0.388868</data>
+</edge>
+<edge source="PPARA" target="NCOR2">
+  <data key="d18">0.353669</data>
+</edge>
+<edge source="PPARA" target="RELA">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="PPARA" target="EP300">
+  <data key="d18">0.33726</data>
+</edge>
+<edge source="PPARA" target="RXRA">
+  <data key="d18">0.121151</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PPARA" target="SIRT1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PPARA" target="RXRG">
+  <data key="d18">0.353669</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DDIT3" target="CEBPB">
+  <data key="d18">0.120382</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DDIT3" target="ATF2">
+  <data key="d18">0.484455</data>
+</edge>
+<edge source="DDIT3" target="ATF4">
+  <data key="d18">0.33991</data>
+</edge>
+<edge source="DDIT3" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="DDIT3" target="JUN">
+  <data key="d18">0.318993</data>
+</edge>
+<edge source="DDIT3" target="NFIL3">
+  <data key="d18">0.484455</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DDIT3" target="JUND">
+  <data key="d18">0.388167</data>
+</edge>
+<edge source="DDIT3" target="EP300">
+  <data key="d18">0.256084</data>
+</edge>
+<edge source="DDIT3" target="HDAC1">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="DDIT3" target="FOSL2">
+  <data key="d18">0.443583</data>
+</edge>
+<edge source="DDIT3" target="ATF3">
+  <data key="d18">0.323872</data>
+</edge>
+<edge source="DDIT3" target="FOS">
+  <data key="d18">0.263308</data>
+</edge>
+<edge source="DDIT3" target="F2">
+  <data key="d18">0.492989</data>
+</edge>
+<edge source="DDIT3" target="TRIB3">
+  <data key="d18">0.33243</data>
+</edge>
+<edge source="HDAC1" target="DNMT3A">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="HDAC1" target="NCOR2">
+  <data key="d18">0.305968</data>
+</edge>
+<edge source="HDAC1" target="CREB1">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="HDAC1" target="PCNA">
+  <data key="d18">0.322417</data>
+</edge>
+<edge source="HDAC1" target="NFKB1">
+  <data key="d18">0.132777</data>
+</edge>
+<edge source="HDAC1" target="NFKBIA">
+  <data key="d18">0.520073</data>
+</edge>
+<edge source="HDAC1" target="TP53">
+  <data key="d18">0.0305397</data>
+</edge>
+<edge source="HDAC1" target="HDAC2">
+  <data key="d18">0.0145919</data>
+</edge>
+<edge source="HDAC1" target="CEBPB">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="HDAC1" target="POU2F1">
+  <data key="d18">0.537305</data>
+</edge>
+<edge source="HDAC1" target="CREBBP">
+  <data key="d18">0.402371</data>
+</edge>
+<edge source="HDAC1" target="HCFC1">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="HDAC1" target="JUN">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="PIAS3">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="HDAC1" target="CIITA">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HDAC1" target="RUNX2">
+  <data key="d18">0.279234</data>
+</edge>
+<edge source="HDAC1" target="RELA">
+  <data key="d18">0.043955</data>
+</edge>
+<edge source="HDAC1" target="LEF1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="EP300">
+  <data key="d18">0.138546</data>
+</edge>
+<edge source="HDAC1" target="KLF4">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HDAC1" target="HIF1A">
+  <data key="d18">0.138546</data>
+</edge>
+<edge source="HDAC1" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="HDAC3">
+  <data key="d18">0.794225</data>
+</edge>
+<edge source="HDAC1" target="SAP30">
+  <data key="d18">0.0349369</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HDAC1" target="PARK7">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="SMAD3">
+  <data key="d18">0.393241</data>
+</edge>
+<edge source="HDAC1" target="CTNNB1">
+  <data key="d18">0.194233</data>
+</edge>
+<edge source="HDAC1" target="ATF3">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="HDAC1" target="SP3">
+  <data key="d18">0.115227</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HDAC1" target="STAT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="CHD4">
+  <data key="d18">0.0358915</data>
+</edge>
+<edge source="HDAC1" target="CDC20">
+  <data key="d18">0.491712</data>
+</edge>
+<edge source="HDAC1" target="MAPK8">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC1" target="DNMT3L">
+  <data key="d18">0.282438</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RUNX2" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RUNX2" target="CEBPB">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="RUNX2" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RUNX2" target="JUN">
+  <data key="d18">0.267119</data>
+</edge>
+<edge source="RUNX2" target="LEF1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="RUNX2" target="EP300">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="RUNX2" target="HIF1A">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RUNX2" target="ETS1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RUNX2" target="HDAC3">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="RUNX2" target="SMAD3">
+  <data key="d18">0.249941</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RUNX2" target="FOS">
+  <data key="d18">0.267119</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="NCOR2">
+  <data key="d18">0.458237</data>
+</edge>
+<edge source="JUN" target="CREB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="JUN" target="ATF2">
+  <data key="d18">0.0471359</data>
+</edge>
+<edge source="JUN" target="ATF4">
+  <data key="d18">0.1715</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="CREBBP">
+  <data key="d18">0.0679733</data>
+</edge>
+<edge source="JUN" target="HCFC1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="JUN" target="SKI">
+  <data key="d18">0.571676</data>
+</edge>
+<edge source="JUN" target="JUND">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="JUN" target="RELA">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="JUN" target="EP300">
+  <data key="d18">0.0492886</data>
+</edge>
+<edge source="JUN" target="ETV4">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="HIF1A">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="JUN" target="FOSL2">
+  <data key="d18">0.457787</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="ETS1">
+  <data key="d18">0.376967</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="HDAC3">
+  <data key="d18">0.585069</data>
+</edge>
+<edge source="JUN" target="VDR">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="JUN" target="SMAD3">
+  <data key="d18">0.123965</data>
+</edge>
+<edge source="JUN" target="ATF3">
+  <data key="d18">0.155477</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="FOS">
+  <data key="d18">0.00972444</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="STAT1">
+  <data key="d18">0.585069</data>
+</edge>
+<edge source="JUN" target="STAT6">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="JUN" target="SIRT1">
+  <data key="d18">0.243823</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUN" target="MAPK8">
+  <data key="d18">0.0050492</data>
+</edge>
+<edge source="JUN" target="EGR1">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="JUN" target="RNF187">
+  <data key="d18">0.332937</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MAPK8" target="TP53">
+  <data key="d18">0.0682206</data>
+</edge>
+<edge source="MAPK8" target="ATF2">
+  <data key="d18">0.0303928</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MAPK8" target="JUND">
+  <data key="d18">0.235165</data>
+</edge>
+<edge source="MAPK8" target="EP300">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="MAPK8" target="SMAD3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MAPK8" target="CTNNB1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="MAPK8" target="SIRT1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="MXRA5" target="EIF1B">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TNC" target="FN1">
+  <data key="d18">0.410116</data>
+</edge>
+<edge source="NFKBIA" target="NCOR2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="NFKBIA" target="NFKB1">
+  <data key="d18">0.0346129</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NFKBIA" target="TP53">
+  <data key="d18">0.472754</data>
+</edge>
+<edge source="NFKBIA" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFKBIA" target="ATF4">
+  <data key="d18">0.492989</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NFKBIA" target="RELA">
+  <data key="d18">0.0089825</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NFKBIA" target="HDAC3">
+  <data key="d18">0.520073</data>
+</edge>
+<edge source="NFKBIA" target="STAT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFKBIA" target="BTRC">
+  <data key="d18">0.016534</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HCFC1" target="HDAC2">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="HCFC1" target="POU2F1">
+  <data key="d18">0.257131</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HCFC1" target="IRF1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HCFC1" target="PPP1CA">
+  <data key="d18">0.343981</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HCFC1" target="EGR2">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HCFC1" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HCFC1" target="CREBZF">
+  <data key="d18">0.153424</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="ANXA2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="EP300" target="NCOR2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="EP300" target="CREB1">
+  <data key="d18">0.06477</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="MYB">
+  <data key="d18">0.226952</data>
+</edge>
+<edge source="EP300" target="PCNA">
+  <data key="d18">0.148693</data>
+</edge>
+<edge source="EP300" target="NFKB1">
+  <data key="d18">0.138546</data>
+</edge>
+<edge source="EP300" target="TP53">
+  <data key="d18">0.005018</data>
+</edge>
+<edge source="EP300" target="CEBPB">
+  <data key="d18">0.274085</data>
+</edge>
+<edge source="EP300" target="ATF2">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="EP300" target="ATF4">
+  <data key="d18">0.233609</data>
+</edge>
+<edge source="EP300" target="CREBBP">
+  <data key="d18">0.356256</data>
+</edge>
+<edge source="EP300" target="PIAS3">
+  <data key="d18">0.533732</data>
+</edge>
+<edge source="EP300" target="IRF1">
+  <data key="d18">0.210129</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="FEN1">
+  <data key="d18">0.211006</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="JUND">
+  <data key="d18">0.286822</data>
+</edge>
+<edge source="EP300" target="RELA">
+  <data key="d18">0.0239108</data>
+</edge>
+<edge source="EP300" target="LEF1">
+  <data key="d18">0.388868</data>
+</edge>
+<edge source="EP300" target="GRB2">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="EP300" target="ETV4">
+  <data key="d18">0.520073</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="KLF4">
+  <data key="d18">0.226952</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="HIF1A">
+  <data key="d18">0.0109625</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="FOSL2">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="EP300" target="ETS1">
+  <data key="d18">0.432548</data>
+</edge>
+<edge source="EP300" target="RXRA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="EP300" target="PRKCD">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="EP300" target="HDAC3">
+  <data key="d18">0.220473</data>
+</edge>
+<edge source="EP300" target="PAX5">
+  <data key="d18">0.388868</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="VDR">
+  <data key="d18">0.73224</data>
+</edge>
+<edge source="EP300" target="SMAD3">
+  <data key="d18">0.0263479</data>
+</edge>
+<edge source="EP300" target="CTNNB1">
+  <data key="d18">0.135718</data>
+</edge>
+<edge source="EP300" target="SP3">
+  <data key="d18">0.256637</data>
+</edge>
+<edge source="EP300" target="FOS">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="EP300" target="STAT1">
+  <data key="d18">0.0802848</data>
+</edge>
+<edge source="EP300" target="BTRC">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="EP300" target="STAT6">
+  <data key="d18">0.357984</data>
+</edge>
+<edge source="EP300" target="CHD4">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="EP300" target="CDC20">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="EP300" target="SIRT1">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="EP300" target="EGR1">
+  <data key="d18">0.185284</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EP300" target="TP63">
+  <data key="d18">0.289938</data>
+</edge>
+<edge source="EP300" target="PPP1R13L">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CTNND1" target="CDH5">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CTNND1" target="PSEN1">
+  <data key="d18">0.398358</data>
+</edge>
+<edge source="CTNND1" target="ATF2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CTNND1" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CTNND1" target="CTNNB1">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CTNND1" target="PTPN6">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="COL20A1" target="FAM9B">
+  <data key="d18">0.443583</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GATA3" target="MYB">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GATA3" target="ETS1">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="GATA3" target="HDAC3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ETV4" target="SRF">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="ETV4" target="TP63">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PCNA" target="ANXA2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="PCNA" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="ATF2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="EIF1B">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="FEN1">
+  <data key="d18">0.0113017</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PCNA" target="POLH">
+  <data key="d18">0.0271952</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PCNA" target="RELA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="PPP1CA">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="PCNA" target="CCNA2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PCNA" target="SIRT1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SDC2" target="MYB">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SDC2" target="SERPINA1">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SDC2" target="FN1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ELANE" target="SERPINA1">
+  <data key="d18">0.276032</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="THBS2" target="MMP9">
+  <data key="d18">0.533732</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CEBPZ" target="TP53">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="CEBPZ" target="RELA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPZ" target="STAT6">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CEBPZ" target="RXRG">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="F2" target="SERPINB6">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="F2" target="FGA">
+  <data key="d18">0.436465</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="F2" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="F2" target="PLAT">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="PLXDC2" target="PSEN1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PLXDC2" target="NCSTN">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100A1" target="ANXA6">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100A1" target="TP53">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="S100A1" target="S100P">
+  <data key="d18">0.197874</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="S100A6" target="ANXA2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="S100A6" target="TP53">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="VTN" target="PPP1CA">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="IL16" target="HDAC3">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IL16" target="KCND2">
+  <data key="d18">0.530378</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IL16" target="EFEMP2">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SEMA4C" target="DLG1">
+  <data key="d18">0.717078</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="BTRC" target="NCOR2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="BTRC" target="MYB">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="BTRC" target="NFKB1">
+  <data key="d18">0.123568</data>
+</edge>
+<edge source="BTRC" target="TP53">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="BTRC" target="ATF4">
+  <data key="d18">0.115535</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="BTRC" target="RELA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="BTRC" target="SMAD3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="BTRC" target="CTNNB1">
+  <data key="d18">0.0146852</data>
+</edge>
+<edge source="BTRC" target="CDC20">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SERPINA1" target="FN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SERPINA1" target="OS9">
+  <data key="d18">0.298244</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FST" target="ADAM12">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FST" target="FN1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="STAT1" target="CREBBP">
+  <data key="d18">0.0646551</data>
+</edge>
+<edge source="STAT1" target="IRF1">
+  <data key="d18">0.322417</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT1" target="RELA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT1" target="RXRA">
+  <data key="d18">0.472754</data>
+</edge>
+<edge source="STAT1" target="PRKCD">
+  <data key="d18">0.117753</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT1" target="HDAC3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="STAT1" target="VDR">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="STAT1" target="ATF3">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="STAT1" target="FOS">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="PARK7" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PARK7" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PARK7" target="CLCF1">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PARK7" target="CHD4">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MET" target="PLXNB1">
+  <data key="d18">0.218414</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MET" target="GRB2">
+  <data key="d18">0.208053</data>
+</edge>
+<edge source="MET" target="PLXNB3">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="MET" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MET" target="PTPN3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CEBPB" target="NCOR2">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="CEBPB" target="CREB1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="CEBPB" target="MYB">
+  <data key="d18">0.654948</data>
+</edge>
+<edge source="CEBPB" target="NFKB1">
+  <data key="d18">0.538056</data>
+</edge>
+<edge source="CEBPB" target="TP53">
+  <data key="d18">0.443981</data>
+</edge>
+<edge source="CEBPB" target="ATF2">
+  <data key="d18">0.520073</data>
+</edge>
+<edge source="CEBPB" target="ATF4">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CEBPB" target="CREBBP">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="CEBPB" target="RELA">
+  <data key="d18">0.286822</data>
+</edge>
+<edge source="CEBPB" target="SRF">
+  <data key="d18">0.277056</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CEBPB" target="SMAD3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CEBPB" target="ATF3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPB" target="SP3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CEBPB" target="STAT6">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="CEBPB" target="EGR1">
+  <data key="d18">0.323172</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CEBPB" target="TP63">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CDC20" target="MAD2L2">
+  <data key="d18">0.292014</data>
+</edge>
+<edge source="CDC20" target="HDAC2">
+  <data key="d18">0.501461</data>
+</edge>
+<edge source="CDC20" target="CREBBP">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CDC20" target="MAD2L1">
+  <data key="d18">0.0088398</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CDC20" target="CCNA2">
+  <data key="d18">0.0898594</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SERPINA10" target="PIAS3">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CREB1" target="TP53">
+  <data key="d18">0.249941</data>
+</edge>
+<edge source="CREB1" target="HDAC2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CREB1" target="POU2F1">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CREB1" target="CREBBP">
+  <data key="d18">0.0166449</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CREB1" target="PPP1CA">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CREB1" target="SRF">
+  <data key="d18">0.765937</data>
+</edge>
+<edge source="CREB1" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CREB1" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CCNA2" target="TP53">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CCNA2" target="FEN1">
+  <data key="d18">0.388868</data>
+</edge>
+<edge source="CCNA2" target="CTNNB1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="RXRA" target="NCOR2">
+  <data key="d18">0.167174</data>
+</edge>
+<edge source="RXRA" target="NFKB1">
+  <data key="d18">0.549451</data>
+</edge>
+<edge source="RXRA" target="POU2F1">
+  <data key="d18">0.370243</data>
+</edge>
+<edge source="RXRA" target="RELA">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="RXRA" target="SRF">
+  <data key="d18">0.73985</data>
+</edge>
+<edge source="RXRA" target="HDAC3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RXRA" target="VDR">
+  <data key="d18">0.0180814</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="RXRA" target="CTNNB1">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="HDAC3" target="NCOR2">
+  <data key="d18">0.0246081</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HDAC3" target="NFKB1">
+  <data key="d18">0.472309</data>
+</edge>
+<edge source="HDAC3" target="TP53">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="HDAC3" target="CREBBP">
+  <data key="d18">0.449051</data>
+</edge>
+<edge source="HDAC3" target="SKI">
+  <data key="d18">0.221602</data>
+</edge>
+<edge source="HDAC3" target="RELA">
+  <data key="d18">0.344359</data>
+</edge>
+<edge source="HDAC3" target="HIF1A">
+  <data key="d18">0.323872</data>
+</edge>
+<edge source="HDAC3" target="SOX2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="HDAC3" target="SRF">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC3" target="SAP30">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HDAC3" target="ATF3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="PSEN1" target="CTNNB1">
+  <data key="d18">0.103564</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="POU2F1" target="NCOR2">
+  <data key="d18">0.306909</data>
+</edge>
+<edge source="POU2F1" target="RELA">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="POU2F1" target="SOX2">
+  <data key="d18">0.449981</data>
+</edge>
+<edge source="POU2F1" target="VDR">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="POU2F1" target="LIFR">
+  <data key="d18">0.85922</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF3" target="NFKB1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="ATF3" target="TP53">
+  <data key="d18">0.221004</data>
+</edge>
+<edge source="ATF3" target="ATF2">
+  <data key="d18">0.393241</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF3" target="ATF4">
+  <data key="d18">0.311981</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF3" target="CREBBP">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="ATF3" target="JUND">
+  <data key="d18">0.45648</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF3" target="RELA">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="ATF3" target="SMAD3">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="ATF3" target="FOS">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="FN1" target="ANXA2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FN1" target="FGB">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FN1" target="FEN1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FN1" target="GRB2">
+  <data key="d18">0.407758</data>
+</edge>
+<edge source="FN1" target="PPP1CA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FN1" target="HSPG2">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="FN1" target="FGA">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FN1" target="TGM2">
+  <data key="d18">0.198165</data>
+</edge>
+<edge source="FN1" target="TRIB3">
+  <data key="d18">0.472754</data>
+</edge>
+<edge source="FN1" target="MMP9">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="STAT6" target="ANXA2">
+  <data key="d18">0.381977</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="STAT6" target="NFKB1">
+  <data key="d18">0.441751</data>
+</edge>
+<edge source="STAT6" target="TP53">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="STAT6" target="CREBBP">
+  <data key="d18">0.33064</data>
+</edge>
+<edge source="STAT6" target="RELA">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="STAT6" target="ETS1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="STAT6" target="PTPN6">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="STAT6" target="IL4R">
+  <data key="d18">0.257477</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ELFN2" target="PPP1CA">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUND" target="ATF2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="JUND" target="FOSL2">
+  <data key="d18">0.794225</data>
+</edge>
+<edge source="JUND" target="ETS1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="JUND" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="JUND" target="SMAD3">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="JUND" target="FOS">
+  <data key="d18">0.206132</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="JUND" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ADAM12" target="GRB2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="RELA" target="NCOR2">
+  <data key="d18">0.222577</data>
+</edge>
+<edge source="RELA" target="NFKB1">
+  <data key="d18">0.0184024</data>
+</edge>
+<edge source="RELA" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="HDAC2">
+  <data key="d18">0.0633982</data>
+</edge>
+<edge source="RELA" target="ATF4">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="CREBBP">
+  <data key="d18">0.024565</data>
+</edge>
+<edge source="RELA" target="PIAS3">
+  <data key="d18">0.290969</data>
+</edge>
+<edge source="RELA" target="IRF1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="RELA" target="KLF4">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="HIF1A">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="SRF">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RELA" target="SMAD3">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="RELA" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="SP3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="FOS">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="RELA" target="TGM2">
+  <data key="d18">0.537305</data>
+</edge>
+<edge source="RELA" target="TRIB3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="SIRT1">
+  <data key="d18">0.289938</data>
+</edge>
+<edge source="RELA" target="EGR1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="RELA" target="TP63">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="RELA" target="PPP1R13L">
+  <data key="d18">0.290969</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IGF1" target="IGFBP7">
+  <data key="d18">0.376967</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PAX5" target="MYB">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PAX5" target="CREBBP">
+  <data key="d18">0.717078</data>
+</edge>
+<edge source="PAX5" target="ETS1">
+  <data key="d18">0.666911</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF2" target="SERPINH1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ATF2" target="ATF4">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ATF2" target="CREBBP">
+  <data key="d18">0.125926</data>
+</edge>
+<edge source="ATF2" target="FOSL2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="ATF2" target="ETS1">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ATF2" target="SMAD3">
+  <data key="d18">0.398358</data>
+</edge>
+<edge source="ATF2" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ATF2" target="FOS">
+  <data key="d18">0.0607382</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF2" target="S100A11">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF2" target="ANXA3">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HSPG2" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HSPG2" target="LTBP2">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LEF1" target="MYB">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LEF1" target="VDR">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LEF1" target="SMAD3">
+  <data key="d18">0.275428</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LEF1" target="CTNNB1">
+  <data key="d18">0.0332192</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EGR1" target="TP53">
+  <data key="d18">0.249941</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="EGR1" target="CREBBP">
+  <data key="d18">0.373779</data>
+</edge>
+<edge source="EGR1" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="KLF4" target="TP53">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="KLF4" target="HDAC2">
+  <data key="d18">0.262588</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="KLF4" target="CREBBP">
+  <data key="d18">0.2064</data>
+</edge>
+<edge source="KLF4" target="PRKCD">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFIC" target="CREBBP">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="NFIC" target="SMAD3">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FOS" target="NCOR2">
+  <data key="d18">0.419331</data>
+</edge>
+<edge source="FOS" target="NFKB1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="FOS" target="ATF4">
+  <data key="d18">0.245755</data>
+</edge>
+<edge source="FOS" target="CREBBP">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="FOS" target="FOSL2">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="FOS" target="ETS1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="FOS" target="VDR">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="FOS" target="SMAD3">
+  <data key="d18">0.333363</data>
+</edge>
+<edge source="FOS" target="SIRT1">
+  <data key="d18">0.441963</data>
+</edge>
+<edge source="FOS" target="UBR1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="CDH5" target="FGA">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CDH5" target="CTNNB1">
+  <data key="d18">0.0776288</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TRIB3" target="ATF4">
+  <data key="d18">0.167257</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TRIB3" target="GDF9">
+  <data key="d18">0.452941</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TRIB3" target="SMAD3">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="MAD2L2" target="ADAM17">
+  <data key="d18">0.830932</data>
+</edge>
+<edge source="MAD2L2" target="MAD2L1">
+  <data key="d18">0.474993</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PRKCD" target="TP53">
+  <data key="d18">0.397933</data>
+</edge>
+<edge source="PRKCD" target="FLI1">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="PRKCD" target="PTPN6">
+  <data key="d18">0.388868</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="DNMT3A" target="DNMT3L">
+  <data key="d18">0.126546</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="IRF1" target="NFKB1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="IRF1" target="CREBBP">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="SMAD3" target="TP53">
+  <data key="d18">0.270109</data>
+</edge>
+<edge source="SMAD3" target="CREBBP">
+  <data key="d18">0.0576634</data>
+</edge>
+<edge source="SMAD3" target="PIAS3">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="SMAD3" target="SKI">
+  <data key="d18">0.0331915</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SMAD3" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SMAD3" target="HIF1A">
+  <data key="d18">0.316224</data>
+</edge>
+<edge source="SMAD3" target="FLI1">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SMAD3" target="ETS1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SMAD3" target="VDR">
+  <data key="d18">0.458237</data>
+</edge>
+<edge source="SMAD3" target="CTNNB1">
+  <data key="d18">0.221602</data>
+</edge>
+<edge source="SMAD3" target="PTPN6">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SMAD3" target="TGM2">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="SMAD3" target="PAPPA">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SMAD3" target="TP63">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SAP30" target="NCOR2">
+  <data key="d18">0.572837</data>
+</edge>
+<edge source="SAP30" target="HDAC2">
+  <data key="d18">0.0670981</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SAP30" target="CHD4">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP3" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SP3" target="HDAC2">
+  <data key="d18">0.298244</data>
+</edge>
+<edge source="SP3" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="S100A8" target="TP53">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="S100A8" target="GDF9">
+  <data key="d18">0.452941</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SKI" target="MYB">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="SKI" target="TP53">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SKI" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PPP1CA" target="TP53">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="PPP1CA" target="PIAS3">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="PPP1CA" target="GRB2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="PPP1CA" target="VDR">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="PPP1CA" target="PPP1R13L">
+  <data key="d18">0.427045</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="HIF1A" target="TP53">
+  <data key="d18">0.214171</data>
+</edge>
+<edge source="HIF1A" target="HDAC2">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="HIF1A" target="CREBBP">
+  <data key="d18">0.0440061</data>
+</edge>
+<edge source="HIF1A" target="CTNNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="HIF1A" target="OS9">
+  <data key="d18">0.296081</data>
+</edge>
+<edge source="CTSH" target="XRN1">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ANXA2" target="TP53">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ANXA2" target="EIF1B">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ANXA2" target="GRB2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="ANXA2" target="PLAT">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PIAS3" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GRB2" target="PRG4">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="GRB2" target="PLXNB1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GRB2" target="ARHGEF11">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GRB2" target="SELL">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="GRB2" target="PTPN6">
+  <data key="d18">0.286657</data>
+</edge>
+<edge source="GRB2" target="TP63">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="GRB2" target="CNTFR">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="TGM2" target="ATF4">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CHD4" target="XRN1">
+  <data key="d18">0.530378</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CHD4" target="HDAC2">
+  <data key="d18">0.0596682</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CHD4" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="FGB" target="FGA">
+  <data key="d18">0.359057</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="MMP9" target="VCAN">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TP53" target="HDAC2">
+  <data key="d18">0.117085</data>
+</edge>
+<edge source="TP53" target="SERPINH1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="TP53" target="CREBBP">
+  <data key="d18">0.0194858</data>
+</edge>
+<edge source="TP53" target="ETS1">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="TP53" target="VDR">
+  <data key="d18">0.537305</data>
+</edge>
+<edge source="TP53" target="ANXA3">
+  <data key="d18">0.594442</data>
+</edge>
+<edge source="TP53" target="LAMA4">
+  <data key="d18">0.427045</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TP53" target="SIRT1">
+  <data key="d18">0.0375543</data>
+</edge>
+<edge source="SERPINH1" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SERPINH1" target="OS9">
+  <data key="d18">0.410771</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PLXNB1" target="ARHGEF11">
+  <data key="d18">0.185469</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PLXNB1" target="SEMA4B">
+  <data key="d18">0.830932</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ARHGEF11" target="PLXNB3">
+  <data key="d18">0.298488</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NFKB1" target="NCOR2">
+  <data key="d18">0.646972</data>
+</edge>
+<edge source="NFKB1" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFKB1" target="ETS1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFKB1" target="SRF">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="NFKB1" target="CTNNB1">
+  <data key="d18">0.332937</data>
+</edge>
+<edge source="NFKB1" target="TP63">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NFKB1" target="NFKBIZ">
+  <data key="d18">0.353722</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FLI1" target="SRF">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="VCAN" target="SELL">
+  <data key="d18">0.561127</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SELL" target="EMCN">
+  <data key="d18">0.598835</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="NCOR2" target="HDAC2">
+  <data key="d18">0.436465</data>
+</edge>
+<edge source="NCOR2" target="CREBBP">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NCOR2" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="NCOR2" target="SRF">
+  <data key="d18">0.451021</data>
+</edge>
+<edge source="NCOR2" target="VDR">
+  <data key="d18">0.393241</data>
+</edge>
+<edge source="NCOR2" target="SIRT1">
+  <data key="d18">0.85922</data>
+</edge>
+<edge source="CTNNB1" target="CREBBP">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CTNNB1" target="SOX2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="CTNNB1" target="PTPN6">
+  <data key="d18">0.765937</data>
+</edge>
+<edge source="CTNNB1" target="SIRT1">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SIRT1" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="SIRT1" target="CIITA">
+  <data key="d18">0.475767</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SIRT1" target="VDR">
+  <data key="d18">0.45648</data>
+</edge>
+<edge source="SIRT1" target="CREBZF">
+  <data key="d18">0.475767</data>
+</edge>
+<edge source="SOX2" target="POU5F1">
+  <data key="d18">0.436465</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SOX2" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="ANXA3" target="UBR1">
+  <data key="d18">0.452941</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ETS1" target="CREBBP">
+  <data key="d18">0.17137</data>
+</edge>
+<edge source="ADAM17" target="MAD2L1">
+  <data key="d18">0.233589</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ADAM17" target="PTPN3">
+  <data key="d18">0.492041</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ADAM17" target="DLG1">
+  <data key="d18">0.33231</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SPOCK2" target="PLXNB3">
+  <data key="d18">0.445567</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CREBBP" target="MYB">
+  <data key="d18">0.0804</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="CREBBP" target="HDAC2">
+  <data key="d18">0.410771</data>
+</edge>
+<edge source="CREBBP" target="ATF4">
+  <data key="d18">0.391484</data>
+</edge>
+<edge source="CREBBP" target="SRF">
+  <data key="d18">0.33141</data>
+</edge>
+<edge source="CREBBP" target="VDR">
+  <data key="d18">0.44596</data>
+</edge>
+<edge source="XRN1" target="RNF187">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="VDR" target="HDAC2">
+  <data key="d18">0.598835</data>
+</edge>
+<edge source="VDR" target="PTPN3">
+  <data key="d18">0.475767</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="VDR" target="RXRG">
+  <data key="d18">0.413476</data>
+</edge>
+<edge source="CIITA" target="HDAC2">
+  <data key="d18">0.243823</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FGA" target="PLAT">
+  <data key="d18">0.376967</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="LAMA4" target="UBR1">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="PTPN6" target="LIFR">
+  <data key="d18">0.585069</data>
+</edge>
+<edge source="PTPN6" target="IL4R">
+  <data key="d18">0.47326</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="SRF" target="RXRG">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="ATF4" target="APH1A">
+  <data key="d18">0.594442</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF4" target="CREBZF">
+  <data key="d18">0.296081</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="ATF4" target="CCDC106">
+  <data key="d18">0.274641</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="APH1A" target="NCSTN">
+  <data key="d18">0.0670981</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="FAM9B" target="CCDC106">
+  <data key="d18">0.392016</data>
+  <data key="d19">True</data>
+</edge>
+<edge source="TP63" target="PPP1R13L">
+  <data key="d18">0.561127</data>
+</edge>
+<edge source="CNTFR" target="LIFR">
+  <data key="d18">0.272878</data>
+  <data key="d19">True</data>
+</edge>
+</graph></graphml>

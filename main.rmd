@@ -1,0 +1,4618 @@
+---
+title: "omic_data_analysis"
+output: html_document
+date: "2024-04-06"
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+library(readxl)
+library(ggstatsplot)
+library(M3C)
+library(DGEobj.utils)
+library(vegan)
+library(survival)
+library(survminer)
+library(immunedeconv)
+library(patchwork)
+library(enrichR)
+library(ComplexHeatmap)
+library(circlize)
+library(reshape2)
+library(ggforestplot)
+library(ggvenn)
+library(gridExtra)
+library(svglite)
+library(ggpubr)
+library(proxy)
+```
+
+```{r}
+setwd("path/to/ecm_grades/")
+```
+
+```{r}
+ecm=read_csv("data/lists/Matrisome_Masterlist.csv") %>% 
+  select("geneSymbol"= `Gene Symbol`, Category, Division )
+```
+
+```{r}
+ecm %>% count(Division) %>% mutate(per=n/1027)
+ecm %>% filter(Division=="Core matrisome") %>% count(Category) %>% mutate(per=n/274)
+ecm %>% filter(Division!="Core matrisome") %>% count(Category) %>% mutate(per=n/753)
+```
+
+## $$ TRANSCRIPTOMIC DATA START $$
+
+# Get transcriptomic data and tidy
+
+```{r, message=FALSE}
+#raw_data
+mrna_seq=read_xlsx("data/raw_data/1-s2.0-S0092867420307443-mmc2.xlsx", sheet = "Table S2D", na=c("","NA","NaN", " "))
+names(mrna_seq)=mrna_seq[2,]
+mrna_seq=mrna_seq[-c(1:70),] 
+
+#gene_maps
+gene_maps_lengths=mrna_seq %>% 
+  select(geneSymbol,gene_id,length) %>% 
+  mutate(length=as.numeric(length)) 
+
+#clean_data
+trx_data=mrna_seq %>% 
+  select(-1, -geneSymbol,-gene_type, -length, -6) %>% 
+  column_to_rownames("gene_id") %>% 
+  mutate_all(~as.numeric(.))
+
+#get rpkm 
+trx_rpkm=trx_data %>% 
+  mutate_all(~2^.) 
+```
+
+# Get median normalized data and tidy
+
+```{r, message=FALSE}
+#raw_data
+mrna_seq_norm=read_xlsx("data/raw_data/1-s2.0-S0092867420307443-mmc2.xlsx", sheet = "Table S2E", na=c("","NA","NaN", " "))
+names(mrna_seq_norm)=mrna_seq_norm[2,]
+mrna_seq_norm=mrna_seq_norm[-c(1:70),] 
+
+#clean_data
+trx_data_norm=mrna_seq_norm %>% 
+  select(-1, -geneSymbol,-gene_type, -length, -6) %>% 
+  column_to_rownames("gene_id") %>% 
+  mutate_all(~as.numeric(.))
+```
+
+# Get ECM genes
+
+```{r}
+# ecm ensembl ids
+ecm_ens_ids=gene_maps_lengths %>% 
+  inner_join(ecm)
+```
+
+# Pie charts (Figure 2a)
+
+```{r}
+ecm_ens_ids %>% 
+  select(geneSymbol, Division) %>% 
+  count(Division) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = Division)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +   
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = c("red","royalblue")) +
+  theme_void()+
+  theme_minimal()+
+  theme(text = element_text(size=20),
+        legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15))+
+  xlab("")+
+  ylab("")
+
+ecm_ens_ids %>% 
+  filter(Division=="Core matrisome") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Core matrisome"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Core matrisome`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +   
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Reds") +
+  theme_void()+
+  theme_minimal()+
+  theme(text = element_text(size=20),
+        legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15),
+        legend.position = "left")+
+  xlab("")+
+  ylab("")
+
+ecm_ens_ids %>% 
+  filter(Division=="Matrisome-associated") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Matrisome-associated"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Matrisome-associated`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +   
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Blues") +
+  theme_void()+
+  theme_minimal()+
+  theme(text = element_text(size=20),
+        legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15),
+        legend.position = "right")+
+  xlab("")+
+  ylab("")
+```
+
+# Create metadata
+
+```{r}
+metadata_trx=data.frame(samples=colnames(trx_data)) %>%  
+  mutate(Type=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+```
+
+```{r}
+ecm_trx=trx_data[ecm_ens_ids$gene_id,]
+ecm_trx_norm=trx_data_norm[ecm_ens_ids$gene_id,]
+ecm_trx_rpkm=trx_rpkm[ecm_ens_ids$gene_id,]
+```
+
+# Hierarchical clustering (Supp. Figure 1 d) 
+
+```{r}
+col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon4"))
+
+col_anno_trx = HeatmapAnnotation(
+  df = metadata_trx,
+  col = list(Type = c("NAT" = "darkgreen", "T" = "indianred4")),
+  annotation_name_gp = gpar(fontsize=20,fontface = "bold"),
+  annotation_legend_param = list(
+    Type = list(
+      title = "Type", 
+      title_gp = gpar(fontface="bold", fontsize = 20),  
+      labels_gp = gpar(fontsize = 20)  
+    )
+  )
+)
+
+ecm_trx_norm %>% 
+  t() %>% 
+  scale() %>% 
+  t() %>% 
+  Heatmap(
+        name = "z-score",
+        col=col_fun,
+        na_col = "black",
+        column_title = "Samples",
+        column_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title = "ECM Genes",
+        row_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title_side = "left",
+        show_column_names = FALSE,
+        show_row_names=FALSE,
+        show_row_dend = FALSE,
+        show_column_dend =TRUE,
+        cluster_rows = TRUE,
+        cluster_columns=TRUE,
+        column_title_side = "bottom",
+        row_names_gp = gpar(fontsize = 5, fontface="bold"),
+        column_names_gp = gpar(fontsize=0, fontface="bold"),
+        top_annotation=col_anno_trx,
+        heatmap_legend_param = list(title = "z-score", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15))) -> heat
+
+ 
+draw(heat, merge_legend=T)
+
+```
+
+# PCA (Supp. Figure 1 e) 
+
+```{r}
+ecm_trx_norm %>% 
+  na.omit() %>% 
+  t() %>% 
+  prcomp() -> pca_data
+
+summary(pca_data)
+
+
+ggplot(pca_data$x, aes(PC1,PC2,fill=metadata_trx$Type))+
+  geom_point(size = 4, stroke = 1, shape = 21, color = "black")+
+  scale_fill_manual(values=c("NAT"="darkgreen","T"="indianred4"))+ 
+  labs(fill="Type")+ 
+  xlab("PC1 40%") +
+  ylab("PC2 6%")+
+  theme_minimal()+
+  theme(panel.border = element_rect(color="black", fill=NA),
+        axis.title = element_text(face="bold", size=25),
+        axis.text = element_text(size=20, color="black"),
+        legend.title = element_text(face= "bold", size=20),
+        legend.text = element_text(size=20))+
+  labs(color = "Type")
+
+```
+
+# Pairwise Euclidean Distances within Groups
+
+```{r}
+# Combine PCA scores with group labels
+pca_data1 <- as.data.frame(pca_data$x[, 1:2]) %>% 
+  rownames_to_column("samples") %>% 
+  mutate(group=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+
+pairwise_dispersion <- function(df) {
+  dists <- vegdist(df[, 1:2], method = "euclidean")
+  return(c(mean = mean(dists), sd = sd(dists)))
+}
+
+tumor_disp <- pairwise_dispersion(subset(pca_data1, group == "T"))
+normal_disp <- pairwise_dispersion(subset(pca_data1, group == "NAT"))
+```
+
+# From samples to patients
+
+```{r}
+patients=ecm_trx%>% 
+  select(ends_with(".N")) %>%
+  colnames() %>% 
+  str_replace(".N$", "")
+```
+
+# Input for TF identification from TRRUST
+
+```{r, message=FALSE}
+patient_genecounts=data.frame(patient=as.character(), degs=as.numeric())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_trx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select("prize"=lfc) %>% 
+    mutate_all(abs) %>% 
+    filter(prize>2) %>% 
+    rownames_to_column("gene_id") %>% 
+    inner_join(ecm_ens_ids) %>% 
+    select("name"=geneSymbol, prize, Category, Division) -> for_trrust
+  
+  filename=paste0("out_data/trx_data/",i,".tsv")
+  #write_tsv(for_trrust,filename)        
+  
+  data.frame(patient=t, degs=nrow(for_trrust)) -> for_violin
+  patient_genecounts=rbind(patient_genecounts, for_violin)
+  
+}
+```
+
+# Violin Plot
+
+```{r}
+summary(patient_genecounts)
+
+ggplot(patient_genecounts, aes(x="", y = degs	)) +
+  #ggtitle("number of genes \nper patient", subtitle ="log2FC>2 or log2FC<-2" )+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Gene Count")+
+  ylim(50,450)+
+  theme_minimal()+
+  theme(axis.title = element_text(size=15, face="bold"),
+        axis.text= element_text(size=13),
+        title = element_text(size=15, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black")) -> trx_violin
+
+trx_violin
+```
+
+# Get all foldchanges
+
+```{r, message=FALSE}
+all_foldchanges_trx=data.frame(gene_id=as.character())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_trx%>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select(lfc) %>% 
+    rename_with(~ i, .cols = "lfc") %>% 
+    rownames_to_column("gene_id") -> plfc
+  
+  all_foldchanges_trx=full_join(all_foldchanges_trx, plfc)
+  
+}
+
+#write_csv(all_foldchanges_trx, "out_data/lists/all_foldchanges_trx.csv")
+all_foldchanges_trx=read_csv("out_data/lists/all_foldchanges_trx.csv")
+```
+
+# Barcode patients based on ECM gene expression profiles
+
+```{r, message=FALSE}
+barcodes_trx=data.frame(Category=distinct(ecm,Category))
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_trx_norm %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    rownames_to_column("gene_id") %>% 
+    filter(lfc > 2 | lfc < -2) %>% 
+    inner_join(ecm_ens_ids) %>% 
+    select(Category,lfc) %>% 
+    filter(!is.na(lfc)) %>% 
+    group_by(Category) %>% 
+    summarize_all(mean, na.rm=T) %>% 
+    rename_with(~ i, .cols = "lfc") -> patient_barcode
+    
+  barcodes_trx=inner_join(barcodes_trx,patient_barcode)
+  
+}
+
+#write_csv(barcodes_trx,"out_data/lists/barcodes_trx.csv")
+barcodes_trx=read_csv("out_data/lists/barcodes_trx.csv")
+```
+
+## $$ TRANSCRIPTOMIC DATA END $$
+
+## $$ PROTEOMIC DATA START $$
+
+```{r, message=FALSE}
+#raw_data
+ptx_ms=read_xlsx("data/raw_data/1-s2.0-S0092867420307443-mmc3.xlsx", sheet = "Table S3A", na=c("","NA","NaN", " "))
+names(ptx_ms)=ptx_ms[2,]
+ptx_ms=ptx_ms[-c(1:70),] 
+
+#protein_maps
+protein_info=ptx_ms %>%
+  select(-17) %>% 
+  select( id, c(2:16))
+
+#clean_data
+ptx_data=ptx_ms %>% 
+  select(-17) %>% 
+  select(-c(2:16)) %>% 
+  column_to_rownames("id") %>% 
+  mutate_all(~as.numeric(.)) 
+
+#TMT_data
+ptx_tmt=ptx_data %>% 
+  mutate_all(~2^.) 
+```
+
+# Get ECM proteins
+
+```{r}
+# ecm refseq ids
+ecm_rfsq_ids=protein_info %>% 
+  inner_join(ecm) %>% 
+  select(geneSymbol, id, Category, Division )
+```
+
+# Pie charts (Supp. Figure 1 a) 
+
+```{r}
+ecm_rfsq_ids %>% 
+  select(geneSymbol, Division) %>% 
+  count(Division) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = Division)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +  
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = c("red","royalblue")) +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15))+
+  xlab("")+
+  ylab("")
+
+ecm_rfsq_ids %>% 
+  filter(Division=="Core matrisome") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Core matrisome"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Core matrisome`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +  
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Reds") +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15),
+        legend.position = "left")+
+  xlab("")+
+  ylab("")
+
+ecm_rfsq_ids %>% 
+  filter(Division=="Matrisome-associated") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Matrisome-associated"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Matrisome-associated`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 15) +  
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Blues") +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 20),
+        legend.text = element_text(size=15),
+        legend.position = "right")+
+  xlab("")+
+  ylab("")
+```
+
+# Create metadata
+
+```{r}
+metadata_ptx=data.frame(samples=colnames(ptx_data)) %>%  
+  mutate(Type=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+```
+
+```{r}
+ecm_ptx=ptx_data[ecm_rfsq_ids$id,]
+```
+
+# Hierarchical clustering (Supp. Figure 1 f) 
+
+```{r}
+col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon4"))
+
+col_anno_ptx = HeatmapAnnotation(
+  df = metadata_ptx,
+  col = list(Type = c("NAT" = "darkgreen", "T" = "indianred4")),
+  annotation_name_gp = gpar(fontsize=20,fontface = "bold"),
+  annotation_legend_param = list(
+    Type = list(
+      title = "Type", 
+      title_gp = gpar(fontface="bold", fontsize = 20),  
+      labels_gp = gpar(fontsize = 20)  
+    )
+  )
+)
+
+ecm_ptx %>%  
+  filter(rowSums(is.na(.))<=145) %>% 
+  t() %>% 
+  scale() %>% 
+  t() %>% 
+  Heatmap(
+        name = "z-score",
+        col=col_fun,
+        na_col = "black",
+        column_title = "Samples",
+        column_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title = "ECM Proteins",
+        row_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title_side = "left",
+        show_column_names = FALSE,
+        show_row_names=FALSE,
+        show_row_dend = FALSE,
+        show_column_dend =TRUE,
+        cluster_rows = TRUE,
+        cluster_columns=TRUE,
+        column_title_side = "bottom",
+        row_names_gp = gpar(fontsize = 5, fontface="bold"),
+        column_names_gp = gpar(fontsize=0, fontface="bold"),
+        top_annotation=col_anno_ptx,
+        heatmap_legend_param = list(title = "z-score", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15))) -> heat
+
+
+draw(heat, merge_legend=T)
+
+```
+
+# PCA (Supp. Figure 1 g) 
+
+```{r}
+ecm_ptx %>% 
+  na.omit() %>% 
+  t() %>% 
+  prcomp() -> pca_data
+
+summary(pca_data)
+
+
+ggplot(pca_data$x, aes(PC1,PC2,fill=metadata_ptx$Type))+
+  geom_point(size = 4, stroke = 1, shape = 21, color = "black")+
+  scale_fill_manual(values=c("darkgreen", "indianred4"))+
+  labs(fill="Type") +
+  xlab("PC1 41%") +
+  ylab("PC2 9%") +
+  theme_minimal()+
+  theme(panel.border = element_rect(color="black", fill=NA),
+        axis.title = element_text(face="bold", size=25),
+        axis.text = element_text(size=20, color = "black"),
+        legend.title = element_text(face= "bold", size=20),
+        legend.text = element_text(size=20))+
+  labs(color = "Type")
+
+```
+
+# Pairwise Euclidean Distances within Groups
+
+```{r}
+# Combine PCA scores with group labels
+pca_data1 <- as.data.frame(pca_data$x[, 1:2]) %>% 
+  rownames_to_column("samples") %>% 
+  mutate(group=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+
+pairwise_dispersion <- function(df) {
+  dists <- vegdist(df[, 1:2], method = "euclidean")
+  return(c(mean = mean(dists), sd = sd(dists)))
+}
+
+tumor_disp <- pairwise_dispersion(subset(pca_data1, group == "T"))
+normal_disp <- pairwise_dispersion(subset(pca_data1, group == "NAT"))
+```
+
+# From samples to patients 
+
+```{r}
+patients=ecm_ptx%>% 
+  select(ends_with(".N")) %>%
+  colnames() %>% 
+  str_replace(".N$", "")
+```
+
+# Count differential proteins per patient
+
+```{r, message=FALSE}
+patient_protcounts=data.frame(patient=as.character(), deps=as.numeric())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_ptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select("prize"=lfc) %>% 
+    mutate_all(abs) %>% 
+    filter(prize>2) %>% 
+    rownames_to_column("id") %>% 
+    inner_join(ecm_rfsq_ids) %>% 
+    select("name"=geneSymbol, prize, Category, Division) -> for_counts
+  
+  data.frame(patient=t, deps=nrow(for_counts)) -> for_violin
+  patient_protcounts=rbind(patient_protcounts, for_violin)
+  
+}
+```
+
+# Violin Plot
+
+```{r}
+summary(patient_protcounts)
+
+ggplot(patient_protcounts, aes(x="", y = deps	)) +
+  #ggtitle("number of proteins \nper patient", subtitle ="log2FC>2 or log2FC<-2" )+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "Patients", y = "Protein Count")+
+  ylim(50,450)+
+  theme_minimal()+
+  theme(axis.title = element_text(size=15, face="bold"),
+        axis.text = element_text(size=13),
+        title = element_text(size=15, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black")) -> ptx_violin
+
+ptx_violin
+```
+
+# Get all foldchanges
+
+```{r, message=FALSE}
+all_foldchanges_ptx=data.frame(prot_id=as.character())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_ptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select(lfc) %>% 
+    rename_with(~ i, .cols = "lfc") %>% 
+    rownames_to_column("prot_id") -> plfc
+  
+  all_foldchanges_ptx=full_join(all_foldchanges_ptx, plfc)
+  
+}
+
+#write_csv(all_foldchanges_ptx, "out_data/lists/all_foldchanges_ptx.csv")
+all_foldchanges_ptx=read_csv("out_data/lists/all_foldchanges_ptx.csv")
+```
+
+# Barcode patients based on ECM protein abundance
+
+```{r, message=FALSE}
+barcodes_ptx=data.frame(Category=distinct(ecm,Category))
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_ptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    rownames_to_column("id") %>% 
+    filter(lfc > 2 | lfc < -2) %>% 
+    inner_join(ecm_rfsq_ids) %>% 
+    select(Category,lfc) %>% 
+    filter(!is.na(lfc)) %>% 
+    group_by(Category) %>% 
+    summarize_all(mean, na.rm=T) %>% 
+    rename_with(~ i, .cols = "lfc") -> patient_barcode
+    
+  barcodes_ptx=inner_join(barcodes_ptx,patient_barcode)
+  
+}
+
+#write_csv(barcodes_ptx, "out_data/lists/barcodes_ptx.csv")
+barcodes_ptx=read_csv("out_data/lists/barcodes_ptx.csv")
+```
+
+## $$ PROTEOMIC DATA END $$
+
+## $$ TRX-PTX CORRELATION START $$
+
+```{r}
+#get genes from trx ptx data
+all_foldchanges_trx=read_csv("out_data/lists/all_foldchanges_trx.csv")    #951 
+all_foldchanges_ptx=read_csv("out_data/lists/all_foldchanges_ptx.csv")    #563
+  
+all_foldchanges_trx_sym=all_foldchanges_trx %>% inner_join(ecm_ens_ids, by=c("gene_id"="gene_id")) %>% select(-gene_id, -Category, -Division, -length)
+all_foldchanges_ptx_sym=all_foldchanges_ptx %>% inner_join(ecm_rfsq_ids, by=c("prot_id"="id")) %>% select(-prot_id, -Category, -Division)
+
+#join to get common genes
+trx_ptx_genes=all_foldchanges_trx_sym %>% 
+  inner_join(all_foldchanges_ptx_sym, by=c("geneSymbol")) %>%
+  group_by(geneSymbol) %>% 
+  summarise_if(is.numeric,mean)  #526
+```
+
+# Correlation with scores (Supp. Figure 1 b)
+
+```{r}
+trx_ptx_genes_cor=trx_ptx_genes %>% 
+  column_to_rownames("geneSymbol") %>% 
+  mutate(trx_score=rowMeans(select(.,ends_with(".x")), na.rm=T)) %>% 
+  mutate(ptx_score=rowMeans(select(.,ends_with(".y")), na.rm=T)) %>%
+  select(trx_score, ptx_score)
+
+ggscatterstats(trx_ptx_genes_cor,
+               type = "non-parametric", #parametric,bayes,
+               smooth.line.args = list(linewidth=0),
+               marginal = T,
+               marginal.type="histogram", #boxplot,density,violin
+               centrality.para="mean",
+               margins="both",
+               xfill = "#CC79A7", 
+               yfill = "#009E73",
+               messages=F,
+               results.subtitle = T,
+               x=trx_score,
+               y=ptx_score,
+               xlab="TRX Score",
+               ylab="PTX Score")
+
+p_value <- 2.32e-53
+rho_value <- 0.60
+n_value <- 526
+
+
+ggplot(trx_ptx_genes_cor, aes(x = trx_score, y = ptx_score)) +
+  geom_point(size=3,alpha = 0.5) + 
+  labs(x = "Gene Expression Score", y = "Protein Abundance Score") +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(face="bold", size = 25),
+    axis.text = element_text(size = 20, color = "black"),
+    panel.border = element_rect(color = "black", fill = NA, size = 1)) +
+  geom_rect(aes(xmin = 3, xmax = 7, ymin = -8.5, ymax = -5), fill = "white", color = "black", alpha = 2) +
+  annotate("text", x = 5, y = -5.5, label = paste("p =", format(p_value, scientific = TRUE), "\nρ =", rho_value, "\nn =", n_value), 
+           hjust = 0.5, vjust = 1, size = 6, color = "black", fontface = "italic") -> scatter_hist
+
+# Adding marginal histograms
+ggExtra::ggMarginal(
+    scatter_hist, 
+    type = "histogram", 
+    fill = "black", 
+    color = "grey",
+    margins = "both",
+    size = 5
+  ) 
+
+```
+
+# Correlation between ptx,trx data for each patient(101) separately (Supp. Figure 1 c)
+
+```{r}
+correlations_per_patient=data.frame(patient = as.character(),
+                             rho=as.numeric(),
+                             pval=as.numeric())
+
+for (i in patients){
+  
+  trx_ptx_genes %>% 
+    column_to_rownames("geneSymbol") %>%
+    select(starts_with(i)) -> for_cor
+  
+  res=cor.test(for_cor[,1], for_cor[,2] , method = "spearman") 
+  rho=data.frame(patient=i, rho=res$estimate, pval=res$p.value) %>%  remove_rownames()
+  correlations_per_patient=rbind(correlations_per_patient,rho)
+  
+}
+
+summary(correlations_per_patient)
+
+
+correlations_per_patient %>% 
+  filter(pval<=0.05) %>% 
+  ggplot(aes(x="", y = rho	)) +
+  #ggtitle("Transcriptomic vs Proteomic" )+
+  geom_violin(fill='grey80') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.5, fill="black")+
+  labs(x = "Patients", y = "Spearman Correlation (ρ)") +
+  theme_minimal()+
+  theme(axis.title = element_text(face="bold", size =25),
+        axis.text.y = element_text(size = 20, color="black"),
+        title = element_text(size=25, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black")) 
+
+```
+
+## $$ TRX-PTX CORRELATION END $$
+
+## $$ PHOSPHOPROTEOMIC DATA START $$
+
+```{r, message=FALSE}
+#raw_data
+p_ptx_ms=read_xlsx("data/raw_data/1-s2.0-S0092867420307443-mmc3.xlsx", sheet = "Table S3B", na=c("","NA","NaN", " "))
+names(p_ptx_ms)=p_ptx_ms[2,]
+p_ptx_ms=p_ptx_ms[-c(1:70),] 
+
+#phospho_maps
+phos_info=p_ptx_ms %>%
+  select(c(1:21)) %>% 
+  select(id, geneSymbol, everything())
+
+#clean_data
+phos_data=p_ptx_ms %>% 
+  select(-c(1:22)) %>% 
+  column_to_rownames("id") %>% 
+  mutate_all(~as.numeric(.)) 
+
+#TMT_data
+phos_tmt=phos_data %>% 
+  mutate_all(~2^.) 
+```
+
+# Get ECM proteins
+
+```{r}
+# ecm refseq ids
+ecm_psite_ids=phos_info %>% 
+  inner_join(ecm) %>% 
+  select(geneSymbol, id, Category, Division )
+```
+
+# Pie charts
+
+```{r}
+ecm_psite_ids %>% 
+  select(geneSymbol, Division) %>% 
+  count(Division) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = Division)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 5) +  
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = c("red","royalblue")) +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 15),
+        legend.text = element_text(size=13))+
+  xlab("")+
+  ylab("")
+
+ecm_psite_ids %>% 
+  filter(Division=="Core matrisome") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Core matrisome"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Core matrisome`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 5) +  
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Reds") +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 15),
+        legend.text = element_text(size=13),
+        legend.position = "left")+
+  xlab("")+
+  ylab("")
+
+ecm_psite_ids %>% 
+  filter(Division=="Matrisome-associated") %>% 
+  select(geneSymbol, Category) %>% 
+  count(Category) %>% 
+  mutate(Percentage=(n/sum(n))*100) %>% 
+  mutate(Percentage=round(Percentage)) %>% 
+  rename("Matrisome-associated"=Category) %>% 
+  ggplot( aes(x = "", y = Percentage, fill = `Matrisome-associated`)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = paste0(n, "\n ", "(", Percentage, "%)")),
+            position = position_stack(vjust = 0.5),
+            size = 5) +  
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Blues") +
+  theme_void()+
+  theme_minimal()+
+  theme(legend.title = element_text(face="bold", size = 15),
+        legend.text = element_text(size=13),
+        legend.position = "left")+
+  xlab("")+
+  ylab("")
+```
+
+# Create metadata
+
+```{r}
+metadata_pptx=data.frame(samples=colnames(phos_data)) %>%  
+  mutate(Type=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+```
+
+```{r}
+ecm_pptx=phos_data[ecm_psite_ids$id,]
+```
+
+# Hierarchical clustering (Supp. Figure 1 h)
+
+```{r}
+col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon"))
+
+col_anno_pptx = HeatmapAnnotation(
+  df = metadata_pptx,
+  col = list(Type = c("NAT" = "darkgreen", "T" = "indianred4")),
+  annotation_name_gp = gpar(fontsize=13,fontface = "bold"),
+  annotation_legend_param = list(
+    Type = list(
+      title = "Type", 
+      title_gp = gpar(fontface="bold", fontsize = 13),  
+      labels_gp = gpar(fontsize = 13)  
+    )
+  )
+)
+
+ecm_pptx %>% 
+  rownames_to_column("phos_id") %>% 
+  inner_join(ecm_psite_ids, by=c("phos_id"="id")) %>% 
+  select(-phos_id,-Category,-Division) %>% 
+  select(geneSymbol, everything(.)) %>% 
+  group_by(geneSymbol) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  mutate_all(~replace_na(.,NA)) %>% 
+  column_to_rownames("geneSymbol") %>% 
+  filter(rowSums(is.na(.))<=130) %>% 
+  t() %>% 
+  scale() %>% 
+  t() %>% 
+  Heatmap(
+        name = "z-score",
+        col=col_fun,
+        na_col = "black",
+        column_title = "Samples",
+        column_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title = "ECM Phosphoproteins",
+        row_title_gp=gpar(fontface="bold",fontsize=25),
+        row_title_side = "left",
+        show_column_names = FALSE,
+        show_row_names=FALSE,
+        show_row_dend = FALSE,
+        show_column_dend =TRUE,
+        cluster_rows = TRUE,
+        cluster_columns=TRUE,
+        column_title_side = "bottom",
+        row_names_gp = gpar(fontsize = 5, fontface="bold"),
+        column_names_gp = gpar(fontsize=0, fontface="bold"),
+        top_annotation=col_anno_pptx,
+        heatmap_legend_param = list(title = "z-score", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15))) -> heat
+
+
+draw(heat, merge_legend=T)
+
+```
+
+# PCA (Supp. Figure 1 i)
+
+```{r}
+ecm_pptx %>% 
+  rownames_to_column("phos_id") %>% 
+  inner_join(ecm_psite_ids, by=c("phos_id"="id")) %>% 
+  select(-phos_id,-Category,-Division) %>% 
+  select(geneSymbol, everything(.)) %>% 
+  group_by(geneSymbol) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  mutate_all(~replace_na(.,NA)) %>% 
+  column_to_rownames("geneSymbol") %>% 
+  filter(rowSums(is.na(.))<=130) %>% 
+  t() %>% 
+  scale() %>% 
+  t() %>% 
+  na.omit() %>% 
+  t() %>% 
+  prcomp() -> pca_data
+
+summary(pca_data)
+
+
+ggplot(pca_data$x, aes(PC1,PC2,fill=metadata_pptx$Type))+
+  geom_point(size = 4, stroke = 1, shape = 21, color = "black")+
+  scale_fill_manual(values=c("darkgreen", "indianred4"))+
+  labs(fill="Type") +
+  xlab("PC1 27%") +
+  ylab("PC2 10%") +
+  theme_minimal()+
+  theme(panel.border = element_rect(color="black", fill=NA),
+        axis.title = element_text(size=30),
+        axis.text = element_text(size=30, color = "black"),
+        legend.title = element_text(face= "bold", size=25),
+        legend.text = element_text(size=20))+
+  labs(color = "Type")
+
+```
+
+# Pairwise Euclidean Distances within Groups
+
+```{r}
+# Combine PCA scores with group labels
+pca_data1 <- as.data.frame(pca_data$x[, 1:2]) %>% 
+  rownames_to_column("samples") %>% 
+  mutate(group=ifelse(str_ends(samples,".N"), "NAT", "T")) %>% 
+  column_to_rownames("samples")
+
+pairwise_dispersion <- function(df) {
+  dists <- vegdist(df[, 1:2], method = "euclidean")
+  return(c(mean = mean(dists), sd = sd(dists)))
+}
+
+tumor_disp <- pairwise_dispersion(subset(pca_data1, group == "T"))
+normal_disp <- pairwise_dispersion(subset(pca_data1, group == "NAT"))
+```
+
+# From samples to patients 
+
+```{r}
+patients=ecm_pptx%>% 
+  select(ends_with(".N")) %>%
+  colnames() %>% 
+  str_replace(".N$", "")
+```
+
+# Count differential phosphoproteins per patient and save for terminal list
+
+```{r}
+patient_pprotcounts=data.frame(patient=as.character(), depps=as.numeric())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_pptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select("prize"=lfc) %>% 
+    mutate_all(abs) %>% 
+    filter(prize>2) %>% 
+    rownames_to_column("id") %>% 
+    inner_join(ecm_psite_ids) %>% 
+    group_by(geneSymbol) %>% 
+    filter(prize==max(prize)) %>% 
+    ungroup() %>% 
+    select("name"=geneSymbol, prize, Category, Division) -> for_terms
+  
+  filename=paste0("out_data/pptx_data/",i,".tsv")
+  #write_tsv(for_terms,filename)   
+  
+  data.frame(patient=t, depps=nrow(for_terms)) -> for_violin
+  patient_pprotcounts=rbind(patient_pprotcounts, for_violin)
+  
+}
+```
+
+# Violin Plot
+
+```{r}
+summary(patient_pprotcounts)
+
+ggplot(patient_pprotcounts, aes(x="", y = depps	)) +
+  #ggtitle("number of phosphoproteins \nper patient", subtitle ="log2FC>2 or log2FC<-2" )+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Phosphoprotein Count")+
+  theme_minimal()+
+  theme(axis.title = element_text(size=15, face="bold"),
+        axis.text = element_text(size=13),
+        title = element_text(size=15, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black"))+
+  scale_y_continuous(limits = c(30, 100)) -> pptx_violin
+
+pptx_violin
+```
+
+```{r}
+trx_violin+ptx_violin+pptx_violin
+```
+
+
+# Get all foldchanges
+
+```{r, message=FALSE}
+all_foldchanges_pptx=data.frame(phos_id=as.character())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_pptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select(lfc) %>% 
+    rename_with(~ i, .cols = "lfc") %>% 
+    rownames_to_column("phos_id") -> plfc
+  
+  all_foldchanges_pptx=full_join(all_foldchanges_pptx, plfc)
+  
+}
+
+#write_csv(all_foldchanges_pptx, "out_data/lists/all_foldchanges_pptx.csv")
+all_foldchanges_pptx=read_csv("out_data/lists/all_foldchanges_pptx.csv")
+
+all_foldchanges_pptx %>% 
+  inner_join(ecm_psite_ids, by=c("phos_id"="id")) %>% 
+  select(-phos_id,-Category,-Division) %>% 
+  select(geneSymbol, everything(.)) %>% 
+  group_by(geneSymbol) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  mutate_all(~replace_na(.,NA)) -> all_foldchanges_pptx_sym
+```
+
+# Phosphoprotein and protein abundance correlations (Supp. Figure 1 j)
+
+```{r}
+ptx_pptx_genes=all_foldchanges_ptx_sym %>% 
+  inner_join(all_foldchanges_pptx_sym, by=c("geneSymbol")) %>%
+  group_by(geneSymbol) %>% 
+  summarise_if(is.numeric,mean) 
+
+ptx_pptx_genes_cor = ptx_pptx_genes %>% 
+  column_to_rownames("geneSymbol") %>% 
+  mutate(ptx_score=rowMeans(select(.,ends_with(".x")), na.rm=T)) %>% 
+  mutate(pptx_score=rowMeans(select(.,ends_with(".y")), na.rm=T)) %>%
+  select(ptx_score, pptx_score) 
+
+ggscatterstats(ptx_pptx_genes_cor,
+               type = "non-parametric", #parametric,bayes,
+               smooth.line.args = list(linewidth=0),
+               marginal = T,
+               marginal.type="histogram", #boxplot,density,violin
+               centrality.para="mean",
+               margins="both",
+               xfill = "#CC79A7", 
+               yfill = "#009E73",
+               messages=F,
+               results.subtitle = T,
+               x=ptx_score,
+               y=pptx_score,
+               xlab="PTX Score",
+               ylab="PPTX Score")
+
+p_value <- 1.28e-22
+rho_value <- 0.69
+n_value <- 153
+
+
+ggplot(ptx_pptx_genes_cor, aes(x = ptx_score, y = pptx_score)) +
+  geom_point(size=3,alpha = 0.5) + 
+  labs(x = "Protein Abundance Score", y = "Phosphoprotein\nAbundance Score") +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(face="bold", size = 25),
+    axis.text = element_text(size = 20, color = "black"),
+    panel.border = element_rect(color = "black", fill = NA, size = 1)) +
+  geom_rect(aes(xmin = 2, xmax = 6, ymin = -4.3, ymax = -2.3), fill = "white", color = "black", alpha = 2) +
+  annotate("text", x = 4, y = -2.5, label = paste("p =", format(p_value, scientific = TRUE), "\nρ =", rho_value, "\nn =", n_value), 
+           hjust = 0.5, vjust = 1, size = 6, color = "black", fontface = "italic") -> scatter_hist
+
+# Adding marginal histograms
+ggExtra::ggMarginal(
+    scatter_hist, 
+    type = "histogram", 
+    fill = "black", 
+    color = "grey",
+    margins = "both",
+    size = 5
+  ) 
+
+```
+
+# Barcode patients based on ECM phosphosites
+
+```{r, message=FALSE}
+barcodes_pptx=data.frame(Category=distinct(ecm,Category))
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  ecm_pptx %>% 
+    select(t, nat) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    rownames_to_column("id") %>% 
+    filter(lfc > 2 | lfc < -2) %>% 
+    inner_join(ecm_psite_ids) %>% 
+    select(Category,lfc) %>% 
+    filter(!is.na(lfc)) %>% 
+    group_by(Category) %>% 
+    summarize_all(mean, na.rm=T) %>% 
+    rename_with(~ i, .cols = "lfc") -> patient_barcode
+    
+  barcodes_pptx=inner_join(barcodes_pptx,patient_barcode)
+  
+}
+
+barcodes_pptx=barcodes_pptx %>% 
+  column_to_rownames("Category") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(Collagens=0) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Category")
+
+#write_csv(barcodes_pptx, "out_data/lists/barcodes_pptx.csv")
+barcodes_pptx=read_csv("out_data/lists/barcodes_pptx.csv")
+```
+
+## $$ PHOSPHOPROTEOMIC DATA END $$
+
+## $$ CLUSTERING START $$
+
+# Create multi-omic ECM barcodes
+
+```{r}
+barcode_trx=barcodes_trx %>% column_to_rownames("Category")
+barcode_ptx=barcodes_ptx %>% column_to_rownames("Category")
+barcode_pptx=barcodes_pptx %>% column_to_rownames("Category")
+
+rbind(barcode_trx,barcode_ptx,barcode_pptx) %>% 
+  rownames_to_column("category") %>% 
+  filter(category!="Collagens2") %>% 
+  mutate(momix_category=ifelse(str_detect(category,"Glycoproteins"), "Glycoproteins",
+                               ifelse(str_detect(category,"Collagens"), "Collagens",
+                                                 ifelse(str_detect(category,"Proteoglycans"), "Proteoglycans",
+                                                        ifelse(str_detect(category, "-affiliated"), "Affiliated Proteins",
+                                                                          ifelse(str_detect(category,"ECM Regulators"), "Regulators",
+                                                                                 ifelse(str_detect(category, "Secreted"), "Secreted Factors", category))))))) %>% 
+  select(-category) %>% 
+  group_by(momix_category) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  column_to_rownames("momix_category") -> momix_barcode 
+
+#momix_barcode %>% rownames_to_column("Category") %>%  write_csv("out_data/lists/momix_barcode.csv")
+momix_barcode=read_csv("out_data/lists/momix_barcode.csv") %>% column_to_rownames("Category")
+```
+
+# Perform M3C consensus clustering on ECM barcodes (Supp. Figure 2 a-c)
+
+```{r}
+# Cluster
+momix_clusters_mec=M3C(momix_barcode, clusteralg = "km", objective = "PAC")
+
+# Write output
+momix_clusters_mec$realdataresults[[4]]$ordered_annotation %>% 
+  rownames_to_column("patients") %>% 
+  mutate(ecm_type=ifelse(consensuscluster==4, "poorest",
+                         ifelse(consensuscluster==3, "poor",
+                                ifelse(consensuscluster==2, "rich", "richest")))) %>% 
+  mutate(`ECM Grade`=ifelse(consensuscluster==4, "ECM-G1",
+                         ifelse(consensuscluster==3, "ECM-G2",
+                                ifelse(consensuscluster==2, "ECM-G3", "ECM-G4")))) %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest","poor","rich","richest"))) -> momix_cluster_annotation 
+
+#momix_cluster_annotation %>% write_csv("out_data/lists/momix_clusters.csv")
+momix_cluster_annotation=read_csv("out_data/lists/momix_clusters.csv") %>%
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest","poor","rich","richest")))
+
+# Plot diagnostics
+
+momix_clusters_mec$plots[[4]]
+
+```
+
+
+# Plot ECM grades (Figure 2 b)
+
+```{r}
+col_anno_code = HeatmapAnnotation(df = select(momix_cluster_annotation, `ECM Grade`),
+                               col = list(`ECM Grade` = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                               annotation_name_gp = gpar(fontsize=20,fontface = "bold"),
+                               annotation_legend_param = list(`ECM Grade` = list( title = "ECM Grade",  title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 20)))) 
+ 
+col_fun = colorRamp2(c(-2,0,2), c("navy","white","maroon4"))
+
+momix_barcode[momix_cluster_annotation$patients] %>% 
+  Heatmap(name = "ECM Score",
+        col = col_fun,
+        column_title = "Patients",
+        border_gp = gpar(fontsize=10,fontface = "bold"),
+        show_column_names = FALSE,
+        show_row_names = TRUE,
+        row_names_side = "left",
+        show_row_dend = FALSE,
+        show_column_dend =FALSE,
+        cluster_rows = TRUE,
+        cluster_columns = FALSE,
+        row_title_side = "left",
+        column_title_side = "bottom",
+        row_dend_side = "left",
+        column_title_gp = gpar(fontface="bold",fontsize=25),
+        row_names_gp = gpar(fontsize=20,fontface="bold"),
+        column_names_centered = TRUE, 
+        column_names_rot = 0,
+        column_km = 4,
+        top_annotation = col_anno_code,
+        heatmap_legend_param = list(title = "ECM Score", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15))) -> heat
+
+
+draw(heat, merge_legend=T)
+
+```
+
+# Plot PCA (Supp. Figure 2d)
+
+```{r}
+data=momix_clusters_mec$realdataresults[[4]]$ordered_data
+annon=momix_clusters_mec$realdataresults[[4]]$ordered_annotation
+
+pca(data,labels=annon$consensuscluster,legendtextsize = 10,axistextsize = 10,dotsize=2)
+
+momix_barcode %>% 
+  t() %>% 
+  prcomp() -> momix_pca
+
+summary(momix_pca)
+
+
+ggplot(as.data.frame(momix_pca$x[momix_cluster_annotation$patients,]), aes(PC1, PC2, fill = momix_cluster_annotation$`ECM Grade`)) +
+  geom_point(size = 4, stroke = 1, shape = 21, color = "black") +
+  scale_fill_manual(values = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')) +
+  labs(fill = "ECM Grade") +
+  xlab("PC1 73%") +
+  ylab("PC2 12%") +
+  theme_minimal() +
+  theme(panel.border = element_rect(color="black", fill=NA),
+        axis.title = element_text(face="bold", size=25),
+        axis.text = element_text(size=20, color = "black"),
+        legend.title = element_text(face= "bold", size=20),
+        legend.text = element_text(size=20))
+
+```
+
+# Compare ECM scores across ECM grades (Figure 2 c-h)
+
+```{r}
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Collagens") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Collagen Score") -> col
+
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Glycoproteins") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Glycoprotein Score") -> gly
+
+
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Proteoglycans") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Proteoglycan Score") -> pg
+
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Regulators") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Regulator Score") -> reg
+
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Secreted Factors") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Secreted Factor Score") -> sf
+
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "Affiliated Proteins") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Affiliated Protein Score") -> affp
+
+grid.arrange(col, gly, pg, reg, sf, affp, ncol=3, nrow=2, top=textGrob("ECM Scores", gp = gpar(fontsize = 15, fontface="bold")))
+
+```
+
+```{r}
+momix_barcode %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  mutate(ecm_type=as.factor(ecm_type)) -> df
+  
+kruskal.test(`Affiliated Proteins` ~ ecm_type, data = df)
+```
+
+# $$ z-scores for later analyses $$
+
+```{r}
+trx_data%>% 
+  select(momix_cluster_annotation$patients) %>% 
+  rownames_to_column("gene_id") %>% 
+  inner_join(gene_maps_lengths) %>% 
+  select(-gene_id,-length) %>% 
+  group_by(geneSymbol) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  column_to_rownames("geneSymbol") %>% 
+  t() %>% 
+  scale(center = T, scale = T) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Hugo_Symbol") -> trx_zscores_raw
+
+#write_csv(trx_zscores_raw, "out_data/lists/trx_zscores_raw.csv")
+trx_zscores_raw=read_csv("out_data/lists/trx_zscores_raw.csv")
+```
+
+## $$ HIGHLY VARIABLE GENE ANALYSIS START $$
+
+```{r}
+momix_cluster_annotation %>% 
+  filter(ecm_type=="poorest") %>% 
+  select(patients) -> poorest_patients 
+  
+trx_zscores_raw %>% 
+  select(Hugo_Symbol, poorest_patients$patients) %>% 
+  mutate(hvgs_high = rowSums(across(-Hugo_Symbol, ~ .x >= 1), na.rm=T)) %>% 
+  mutate(hvgs_low = rowSums(across(-Hugo_Symbol, ~ .x <= -1), na.rm=T)) %>% 
+  filter((hvgs_high>=13 |  hvgs_low>=13)) %>% # & hvgs_low<=3) | (hvgs_high <=3 &
+  select(Hugo_Symbol, starts_with("hvgs")) %>% 
+  mutate(from="poorest") %>% 
+  mutate(diffexp=ifelse(hvgs_high>hvgs_low, "up", "down")) -> poorest_degs
+
+momix_cluster_annotation %>% 
+  filter(ecm_type=="poor") %>% 
+  select(patients) -> poor_patients 
+  
+trx_zscores_raw %>% 
+  select(Hugo_Symbol, poor_patients$patients) %>% 
+  mutate(hvgs_high = rowSums(across(-Hugo_Symbol, ~ .x >= 1), na.rm=T)) %>% 
+  mutate(hvgs_low = rowSums(across(-Hugo_Symbol, ~ .x <= -1), na.rm=T)) %>% 
+  filter((hvgs_high>=13 | hvgs_low>=13)) %>%
+  select(Hugo_Symbol, starts_with("hvgs")) %>% 
+  mutate(from="poor") %>% 
+  mutate(diffexp=ifelse(hvgs_high>hvgs_low, "up", "down")) -> poor_degs
+
+momix_cluster_annotation %>% 
+  filter(ecm_type=="rich") %>% 
+  select(patients) -> rich_patients 
+  
+trx_zscores_raw %>% 
+  select(Hugo_Symbol, rich_patients$patients) %>% 
+  mutate(hvgs_high = rowSums(across(-Hugo_Symbol, ~ .x >= 1), na.rm=T)) %>% 
+  mutate(hvgs_low = rowSums(across(-Hugo_Symbol, ~ .x <= -1 ), na.rm=T)) %>% 
+  filter((hvgs_high>=13 | hvgs_low>=13)) %>% 
+  select(Hugo_Symbol, starts_with("hvgs")) %>% 
+  mutate(from="rich") %>% 
+  mutate(diffexp=ifelse(hvgs_high>hvgs_low, "up", "down"))-> rich_degs
+
+momix_cluster_annotation %>% 
+  filter(ecm_type=="richest") %>% 
+  select(patients) -> richest_patients 
+  
+trx_zscores_raw %>% 
+  select(Hugo_Symbol, richest_patients$patients) %>% 
+  mutate(hvgs_high = rowSums(across(-Hugo_Symbol, ~ .x >= 1), na.rm=T)) %>% 
+  mutate(hvgs_low = rowSums(across(-Hugo_Symbol, ~ .x <= -1), na.rm=T)) %>% 
+  filter((hvgs_high>=8 | hvgs_low>=8)) %>% 
+  select(Hugo_Symbol, starts_with("hvgs")) %>% 
+  mutate(from="richest") %>% 
+  mutate(diffexp=ifelse(hvgs_high>hvgs_low, "up", "down")) -> richest_degs
+```
+
+# Show HVGs (Figure 2 i)
+
+```{r}
+poorest_degs %>% 
+  full_join(poor_degs) %>% 
+  full_join(rich_degs) %>% 
+  full_join(richest_degs) %>% 
+  #filter(Hugo_Symbol%in%ecm$geneSymbol) %>% 
+  group_by(Hugo_Symbol) -> union_degs
+
+heatanno=HeatmapAnnotation(df = select(momix_cluster_annotation, "ECM Grade"),
+                           col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                           annotation_name_gp = gpar(fontsize=20,fontface = "bold"),
+                           annotation_legend_param = list(`ECM Grade` = list( title = "ECM Grade",  title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 20))))
+
+column_groups <- c(rep("ECM-G1", times = 21), rep("ECM-G2", times = 35), rep("ECM-G3", times = 32),rep("ECM-G4", times = 13))
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%union_degs$Hugo_Symbol) %>% 
+  select(Hugo_Symbol,momix_cluster_annotation$patients) %>% 
+  group_by(Hugo_Symbol) %>% 
+  summarize_all(mean,na.rm = T) %>% 
+  select(Hugo_Symbol) %>% 
+  left_join(ecm, by=c("Hugo_Symbol"="geneSymbol")) %>% 
+  select(-Division) %>% 
+  mutate(Category=replace_na(Category, "Non Matrisome")) -> forrow
+
+rowanno=rowAnnotation(df=select(forrow,Category), 
+                          col = list(Category = c("Collagens"="#66C2A5",
+                                                  "ECM Glycoproteins"="#E78AC3",
+                                                  "ECM Regulators"="#FFD92F",
+                                                  "ECM-affiliated Proteins"="#8DA0CB",
+                                                  "Non Matrisome"="#B3B3B3",
+                                                  "Proteoglycans"="#FC8D62")),
+                          annotation_width = 1*unit(0.5,"mm"),
+                          annotation_name_gp = gpar(fontsize=0,fontface = "bold"),
+                          annotation_legend_param = list(`Category` = list( title = "Category",  title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 20))))
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%union_degs$Hugo_Symbol) %>% 
+  select(Hugo_Symbol,momix_cluster_annotation$patients) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  as.matrix() %>% 
+  Heatmap(cluster_columns = F,
+          cluster_rows=T,
+          show_column_names = F,
+          show_row_dend = F,
+          show_row_names = T,
+          column_split = column_groups,
+          gap = unit(10, "mm"),
+          top_annotation = heatanno,
+          right_annotation = rowanno,
+          height = 1*unit(150,"mm"),
+          width = 1*unit(120,"mm"),
+          row_names_gp = gpar(fontsize=12, fontface="italic"),
+          name= "z-score",
+          col = colorRamp2(c(-2,0, 2), c("navy", "white" ,"maroon4")),
+          heatmap_legend_param = list(title = "z-score", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15))) -> hvg_heat
+
+
+draw(hvg_heat, heatmap_legend_side="right", annotation_legend_side="bottom", merge_legend = T)
+
+```
+
+# Hyper-geometric test
+
+```{r}
+phyper( q=11-1,               
+        m=951,         
+        n=18097-951,  
+        k=39,       
+        lower.tail=FALSE)  
+```
+
+# Enrichment on DEGs (Figure 2 j-k)
+
+```{r}
+dbs <- c("MSigDB_Hallmark_2020", "KEGG_2021_Human", "Reactome_2022", "GO_Biological_Process_2023") #  MSigDB_Hallmark_2020, KEGG_2021_Human, Reactome_2022, GO_Biological_Process_2023
+
+enriched_all <- enrichr(union_degs$Hugo_Symbol, dbs) 
+
+enriched_all[[1]] %>% 
+  filter(Adjusted.P.value<=0.05) %>%  
+  filter(!str_detect(Overlap, "2/")) %>% 
+  filter(!str_detect(Term, "UV Response")) %>% 
+  mutate(adjp=-log10(Adjusted.P.value)) %>% 
+  mutate(Term = str_replace(Term, " R-HSA-\\d+", "")) %>%
+  ggplot( aes(x = adjp, y = reorder(Term, adjp), fill = adjp)) +
+  geom_bar(stat = "identity", color="grey65")+ 
+  scale_fill_gradient(low = "white", high="maroon4")+
+  xlab("-log10(Adjusted.P.value)")+
+  ylab("")+
+  labs(fill = "-log10(p-adj)")+
+  ggtitle("MSigDB Hallmarks")+
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(color = "grey65"),
+        panel.grid.minor.x = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill = NA, color = "grey65"),
+        axis.ticks.y = element_blank(),
+        axis.text.y.right = element_text(size=15, colour = "black"),
+        legend.position="none",
+        title = element_text(size=15, face="bold"),
+        axis.text.x = element_text(size=15, colour = "black"),
+        axis.title.y = element_text(size=15),
+        axis.title.x = element_text(size=15, face="bold"))+
+  scale_x_continuous(limits = c(0, 8), expand = c(0, 0))+
+  scale_y_discrete(position = "right") -> hvg_hall
+
+enriched_all[[3]] %>% 
+  filter(Adjusted.P.value<=0.05) %>%  
+  filter(!str_detect(Overlap, "2/")) %>% 
+  mutate(adjp=-log10(Adjusted.P.value)) %>% 
+  mutate(Term = str_replace(Term, " R-HSA-\\d+", "")) %>%
+  ggplot( aes(x = adjp, y = reorder(Term, adjp), fill = adjp)) +
+  geom_bar(stat = "identity", color="grey65")+ 
+  scale_fill_gradient(low = "white", high="maroon4")+
+  xlab("-log10(Adjusted.P.value)")+
+  ylab("")+
+  labs(fill = "-log10(p-adj)")+
+  ggtitle("REACTOME Pathways")+
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(color = "grey65"),
+        panel.grid.minor.x = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill = NA, color = "grey65"),
+        axis.ticks.y = element_blank(),
+        axis.text.y.right = element_text(size=15, colour = "black"),
+        legend.position="none",
+        title = element_text(size=15, face="bold"),
+        axis.text.x = element_text(size=15, colour = "black"),
+        axis.title.y = element_text(size=15),
+        axis.title.x = element_text(size=15, face="bold"))+
+  scale_x_continuous(limits = c(0, 8), expand = c(0, 0))+
+  scale_y_discrete(position = "right") -> hvg_reac
+
+enriched_all[[4]] %>% 
+  filter(Adjusted.P.value<=0.05) %>%  
+  filter(!str_detect(Overlap, "2/")) %>% 
+  mutate(adjp=-log10(Adjusted.P.value)) %>% 
+  mutate(Term = str_replace(Term, " \\(GO:\\d+\\)", "")) %>% 
+  ggplot( aes(x = adjp, y = reorder(Term, adjp), fill = adjp)) +
+  geom_bar(stat = "identity", color="grey65")+ 
+  scale_fill_gradient(low = "white", high="maroon4")+
+  xlab("-log10(Adjusted.P.value)")+
+  ylab("")+
+  labs(fill = "-log10(p-adj)")+
+  ggtitle("GO Biological Process")+
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(color = "grey65"),
+        panel.grid.minor.x = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill = NA, color = "grey65"),
+        axis.ticks.y = element_blank(),
+        axis.text.y.right = element_text(size=15, colour = "black"),
+        legend.position="none",
+        title = element_text(size=15, face="bold"),
+        axis.text.x = element_text(size=15, colour = "black"),
+        axis.title.y = element_text(size=15),
+        axis.title.x = element_text(size=15, face="bold"))+
+  scale_x_continuous(limits = c(0, 5), expand = c(0, 0))+
+  scale_y_discrete(position = "right") -> hvg_go
+
+(hvg_reac / hvg_go / hvg_hall) +plot_layout(guides = "collect") -> hvg_nrich
+
+```
+
+## $$ HIGHLY VARIABLE GENE ANALYSIS END $$
+
+## $$ CELLULAR HETEROGENEITY START $$
+
+# Convert RPKM to TPM
+
+```{r}
+trx_rpkm %>% 
+  rownames_to_column("gene_id") %>% 
+  inner_join(gene_maps_lengths) %>% 
+  select(-gene_id, -length) %>% 
+  select(geneSymbol, everything(.)) %>% 
+  filter(!is.na(geneSymbol)) %>% 
+  group_by(geneSymbol) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  column_to_rownames("geneSymbol") -> for_conversion
+
+
+# Function
+rpkm_to_tpm <- function(rpkm_df) {
+  rpkm_matrix <- as.matrix(rpkm_df)
+  rpkm_sums <- colSums(rpkm_matrix, na.rm=T)
+  fraction_matrix <- t(t(rpkm_matrix) / rpkm_sums)
+  tpm_matrix <- fraction_matrix * 1e6
+  return(tpm_matrix)
+}
+
+trx_tpm <- rpkm_to_tpm(for_conversion) %>% as.data.frame()
+```
+
+# Work on cellular heterogeneity
+
+```{r}
+res_mcp_counter <- deconvolute(trx_tpm, "mcp_counter") # only comparable between samples
+res_epic <- deconvolute(trx_tpm, "epic") # between and within sample comparison
+```
+
+```{r}
+patients=trx_data%>% 
+  select(ends_with(".N")) %>%
+  colnames() %>% 
+  str_replace(".N$", "")
+
+cellularity_folds=data.frame(cell_type=as.character())
+
+for (i in patients) {
+  
+  t=i
+  nat=paste0(i,".N")
+  
+  res_mcp_counter %>% # res_epic (Supp. Figure 2 a,b) 
+    column_to_rownames("cell_type") %>% 
+    select(t, nat) %>% 
+    mutate_all(~log2(.+1)) %>% 
+    mutate(lfc=!!sym(t)-!!sym(nat)) %>% 
+    select(lfc) %>% 
+    rename_with(~ i, .cols = "lfc") %>% 
+    rownames_to_column("cell_type") -> plfc
+  
+  cellularity_folds=full_join(cellularity_folds, plfc)
+  
+}
+```
+
+# Show folchange cellularity (Figure 3 a)
+
+```{r}
+cellularity_folds %>% 
+  filter(!str_detect(cell_type, "score")) %>% 
+  filter(!str_detect(cell_type, "uncharacterized")) %>%
+  column_to_rownames("cell_type") %>% 
+  select(filter(momix_cluster_annotation, ecm_type=="poorest")$patients) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(function(x) ifelse(x<=-3, -3, 
+                                ifelse(x>=3, 3, x))) %>% 
+  melt() %>% 
+  ggplot(aes(x = value, y = variable, color=variable)) +
+  geom_point(size=3) +
+  labs(x = "log2FC") + 
+  theme_minimal()+
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size=20),
+        title = element_text(size=25, face="bold"),
+        legend.position = "none") +
+  scale_x_continuous(limits = c(-3, 3))+
+  ggtitle("ECM Grade 1")+
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey")  -> poorest_cellularity
+
+cellularity_folds %>% 
+  filter(!str_detect(cell_type, "score")) %>% 
+  filter(!str_detect(cell_type, "uncharacterized")) %>%
+  column_to_rownames("cell_type") %>% 
+  select(filter(momix_cluster_annotation, ecm_type=="poor")$patients) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(function(x) ifelse(x<=-3, -3, 
+                                ifelse(x>=3, 3, x))) %>% 
+  melt() %>% 
+  ggplot(aes(x = value, y = variable, color=variable)) +
+  geom_point(size=3) +
+  labs(x = "log2FC") + 
+  theme_minimal()+
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size=20),
+        title = element_text(size=25, face="bold"),
+        legend.position = "none") +
+  scale_x_continuous(limits = c(-3, 3))+
+  ggtitle("ECM Grade 2")+
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> poor_cellularity
+
+cellularity_folds %>% 
+  filter(!str_detect(cell_type, "score")) %>% 
+  filter(!str_detect(cell_type, "uncharacterized")) %>%
+  column_to_rownames("cell_type") %>% 
+  select(filter(momix_cluster_annotation, ecm_type=="rich")$patients) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(function(x) ifelse(x<=-3, -3, 
+                                ifelse(x>=3, 3, x))) %>% 
+  melt() %>% 
+  ggplot(aes(x = value, y = variable, color=variable)) +
+  geom_point(size=3) +
+  labs(x = "log2FC") + 
+  theme_minimal()+
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size=20),
+        title = element_text(size=25, face="bold"),
+        legend.position = "none") +
+  scale_x_continuous(limits = c(-3, 3))+
+  ggtitle("ECM Grade 3")+
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> rich_cellularity
+
+cellularity_folds %>% 
+  filter(!str_detect(cell_type, "score")) %>% 
+  filter(!str_detect(cell_type, "uncharacterized")) %>%
+  column_to_rownames("cell_type") %>% 
+  select(filter(momix_cluster_annotation, ecm_type=="richest")$patients) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(function(x) ifelse(x<=-3, -3, 
+                                ifelse(x>=3, 3, x))) %>% 
+  melt() %>% 
+  ggplot(aes(x = value, y = variable, color=variable)) +
+  geom_point(size=3) +
+  labs(x = "log2FC") + 
+  theme_minimal()+
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size=20),
+        title = element_text(size=25, face="bold"),
+        legend.position = "none") +
+  scale_x_continuous(limits = c(-3, 3))+
+  ggtitle("ECM Grade 4")+
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> richest_cellularity
+
+poorest_cellularity+poor_cellularity+rich_cellularity+richest_cellularity
+
+```
+
+# Show difference in CAF, Endothelial cell enrichment across ECM grades (Figure 3 b,c, Supp. Figure 3 d-k)
+
+```{r}
+cellularity_folds %>% 
+  filter(cell_type=="Endothelial cell") %>% 
+  column_to_rownames("cell_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "cell"="Endothelial cell") %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=cell, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Endothelial Cell Enrichment") -> ed_cell
+
+
+cellularity_folds %>% 
+  filter(cell_type=="Cancer associated fibroblast") %>% 
+  column_to_rownames("cell_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "cell"="Cancer associated fibroblast") %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=cell, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("CAF Enrichment") -> caf_cell
+
+
+ed_cell+caf_cell
+
+```
+
+
+```{r}
+cellularity_folds %>% 
+  filter(cell_type=="Endothelial cell") %>% 
+  column_to_rownames("cell_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "cell"="Endothelial cell") %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) -> df
+
+kruskal.test(cell ~ ecm_type, data = df)
+```
+
+## $$ CELLULAR HETEROGENEITY END $$
+
+# $$ GET CLINICAL DATA $$
+
+```{r}
+clinical_cbio1=read_tsv("data/cbioportal/luad_cptac_2020/data_clinical_patient.txt", skip = 4) %>% 
+  mutate(patients=str_replace(PATIENT_ID, "-", ".")) %>% 
+  inner_join(momix_cluster_annotation, by="patients") %>% 
+  mutate(SMOKING_STATUS=replace_na(SMOKING_STATUS, "Not Available")) %>% 
+  mutate(STAGE=ifelse(str_detect(STAGE, "1"), "1",
+                ifelse(str_detect(STAGE, "2"), "2",
+                       ifelse(str_detect(STAGE, "3"), "3", "Not Available")))) %>% 
+  select(-PATIENT_ID) %>% 
+  select(patients, everything(.))
+```
+
+```{r}
+raw_c2=read_tsv("data/cbioportal/luad_cptac_2020/data_clinical_sample.txt", skip = 4)
+
+remove2=c()
+
+for (i in colnames(read_tsv("data/cbioportal/luad_cptac_2020/data_clinical_sample.txt", skip = 4))){
+
+   raw_c2 %>%
+    mutate(patients=str_replace(PATIENT_ID, "-", ".")) %>% 
+    inner_join(momix_cluster_annotation, by="patients") %>% distinct(!!sym(i)) -> some_res
+
+  if (nrow(some_res) == 1) {
+    remove2 <- c(remove2, i)
+  }
+ 
+}
+
+clinical_cbio2=read_tsv("data/cbioportal/luad_cptac_2020/data_clinical_sample.txt", skip = 4) %>% 
+  mutate(patients=str_replace(PATIENT_ID, "-", ".")) %>% 
+  inner_join(momix_cluster_annotation, by="patients") %>% 
+  select(-remove2) %>% 
+  mutate(KRAS_MUTATION=ifelse(str_detect(TP53_MUTATION, ";"),"Nonsense_Mutation", KRAS_MUTATION)) %>%
+  mutate(TP53_MUTATION=ifelse(str_detect(TP53_MUTATION, ";"),"Missense_Mutation", TP53_MUTATION)) %>% 
+  mutate(KRAS_MUTATION=ifelse(is.na(KRAS_MUTATION) & KRAS_MUTATION_STATUS==1, "Unspecified_Mutation", KRAS_MUTATION)) %>% 
+  mutate(across(ends_with("_MUTATION"), ~replace_na(., "No_Mutation"))) %>%
+  mutate(CIMP_STATUS=replace_na(CIMP_STATUS,"Not Available")) %>%
+  mutate(MRNA_EXPRESSION_SUBTYPE_TCGA=replace_na(MRNA_EXPRESSION_SUBTYPE_TCGA,"Not Available")) %>%
+  select(-PATIENT_ID) %>% 
+  select(patients, everything(.))
+```
+
+```{r}
+raw_c3=read_tsv("data/clinical-cptac-3.2023-10-02/clinical.tsv")
+
+remove3=c()
+
+for (i in colnames(read_tsv("data/clinical-cptac-3.2023-10-02/clinical.tsv"))){
+
+   raw_c3 %>%
+    mutate(patients=str_replace(case_submitter_id, "-", ".")) %>% 
+    inner_join(momix_cluster_annotation, by="patients") %>% distinct(!!sym(i)) -> some_res
+
+  if (nrow(some_res) == 1) {
+    remove3 <- c(remove3, i)
+  }
+ 
+}
+
+clinical3=read_tsv("data/clinical-cptac-3.2023-10-02/clinical.tsv") %>% 
+  mutate(patients=gsub("-", ".", case_submitter_id)) %>% 
+  inner_join(momix_cluster_annotation, by="patients") 
+
+survival_data=clinical3 %>% 
+  select(patients,
+         ecm_type,
+         "ECM_Grade"=`ECM Grade`,
+         days_to_death,  
+         vital_status,
+         days_to_last_follow_up,
+         days_to_last_known_disease_status,
+         days_to_recurrence,
+         progression_or_recurrence,
+         last_known_disease_status,
+         tumor_grade,
+         ajcc_pathologic_stage,
+         treatment_outcome,
+         treatment_type,
+         residual_disease) %>% 
+  mutate(days_to_last_follow_up=as.numeric(days_to_last_follow_up),
+         days_to_last_known_disease_status=as.numeric(days_to_last_known_disease_status),
+         days_to_recurrence=as.numeric(days_to_recurrence)) %>% 
+  mutate(DECEASED=ifelse(vital_status == "Dead", TRUE,
+                         ifelse(vital_status == "Alive", FALSE, NA))) %>% 
+  mutate(RECURRENCE=ifelse(progression_or_recurrence == "yes", TRUE,
+                           ifelse(progression_or_recurrence=="no", FALSE, NA))) %>% 
+  mutate(days_to_recurrence_alt1=ifelse(is.na(days_to_recurrence), days_to_last_follow_up, days_to_recurrence)) %>% 
+  mutate(days_to_recurrence_alt2=ifelse(is.na(days_to_recurrence), days_to_last_known_disease_status, days_to_recurrence))
+```
+
+```{r}
+combined_clinicals=clinical_cbio1 %>% 
+  inner_join(clinical_cbio2) %>% 
+  inner_join(survival_data) 
+```
+
+# Check correlation between ECM scores and tumor purity (Figure 3 d)
+
+```{r}
+# Combine data for correlation calculation
+combined_clinicals %>% 
+  select(patients, TUMOR_PURITY_BYESTIMATE_RNASEQ, `ESTIMATE STROMALSCORE`) %>% 
+  column_to_rownames("patients") -> clinicals_for_correlation 
+
+as.data.frame(t(momix_barcode))[rownames(clinicals_for_correlation),] -> barcodes_for_correlation
+
+# Calculate correlations
+score_correlations = data.frame(comparison=as.character(), pval=as.numeric(), rho=as.numeric())
+
+for (i in colnames(clinicals_for_correlation)){
+  
+  for (j in colnames(barcodes_for_correlation)){ 
+    
+    res=cor.test(clinicals_for_correlation[,i], barcodes_for_correlation[,j], method="spearman")
+    
+    k=paste(i,j, sep = ";")
+    pval=res$p.value
+    rho=as.numeric(res$estimate)
+    
+    df=data.frame(comparison=k, pval=pval, rho=rho)
+    
+    score_correlations=rbind(score_correlations,df)
+    
+    }
+  
+}
+
+# Plot heatmap for correlations
+score_correlations %>% # filter(pval>0.05)
+  separate(comparison, into=c("compa","rison"), sep = ";") %>% 
+  select(-pval) %>% 
+  pivot_wider(names_from = compa, values_from = rho) %>% 
+  column_to_rownames("rison") %>% 
+  select("\nTumor \nPurity" = TUMOR_PURITY_BYESTIMATE_RNASEQ, "\nStromal \nScore"="ESTIMATE STROMALSCORE") %>% 
+  Heatmap(show_row_dend = F,
+          show_column_dend = F,
+          name = "Spearman\nCorrelation",
+          column_names_rot = 0,
+          column_names_centered = T,
+          column_title_gp=gpar(fontface="bold",fontsize=25),
+          row_title_gp=gpar(fontface="bold",fontsize=25),
+          rect_gp = gpar(col = "white", lwd = 2),
+          width = 1*unit(40, "mm"),
+          height = 1*unit(60, "mm"),
+          cluster_rows = T,
+          row_names_gp = gpar(fontsize = 15, fontface="bold"),
+          column_names_gp = gpar(fontsize=15, fontface="bold"),
+          heatmap_legend_param = list(title = "Spearman\nCorrelation", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15), legend_direction="horizontal"),
+          col = colorRamp2(c(-0.5,0,0.5), c("navy", "white", "maroon4")),
+          column_title = "ESTIMATE") -> ht
+
+
+draw(ht, heatmap_legend_side = "top")
+
+```
+
+# Show difference in stromal score and tumor purity across ECM grades (Figure 3 e,f, Supp. Figure 3 c)
+
+```{r}
+clinicals_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+    select(ecm_type, "ESTIMATE STROMALSCORE") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  #filter(value>0.1)
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Stromal Score") -> stro
+
+clinicals_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+    select(ecm_type, TUMOR_PURITY_BYESTIMATE_RNASEQ) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Tumor Purity") -> tp
+
+cell=stro+tp
+cell
+
+combined_clinicals %>% 
+  select(patients, `ESTIMATE IMMUNESCORE`) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+    select(ecm_type, `ESTIMATE IMMUNESCORE`) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("ESTIMATE IMMUNESCORE") -> estimm
+```
+
+
+```{r}
+clinicals_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, "TUMOR_PURITY_BYESTIMATE_RNASEQ") %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest")))  -> df
+  
+kruskal.test(value ~ ecm_type, data = df)
+```
+
+## $$ CORRELATION ANALYSIS START $$
+
+```{r}
+# Get some genelists
+emt=read_tsv("data/lists/emtlist.txt", col_names = F)
+csc=read_tsv("data/lists/csclist.txt", col_names = F)
+inv=read_tsv("data/lists/invlist.txt", col_names = F)
+int=read_tsv("data/lists/intlist.txt", col_names = F)
+imm=data.frame(X1=c("ISCW","PKM","CXCL8","CEBPB","NFKBIA","SLC11A2","TIMP1","AQP3","IARS","APOB","AARS"))
+
+# Calculate scores on trx data
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%emt$X1) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(emt_score=rowMeans(.,na.rm=T)) %>% 
+  rownames_to_column("Patients") %>% 
+  select(Patients, emt_score) -> emt_scores
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%csc$X1) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(csc_score=rowMeans(.,na.rm=T)) %>% 
+  rownames_to_column("Patients") %>% 
+  select(Patients,csc_score) -> csc_scores
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%inv$X1) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(inv_score=rowMeans(.,na.rm=T)) %>% 
+  rownames_to_column("Patients") %>% 
+  select(Patients,inv_score) -> inv_scores
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%int$X1) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(int_score=rowMeans(.,na.rm=T)) %>% 
+  rownames_to_column("Patients") %>% 
+  select(Patients,int_score) -> int_scores
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%imm$X1) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate(imm_score=rowMeans(.,na.rm=T)) %>% 
+  rownames_to_column("Patients") %>% 
+  select(Patients,imm_score) -> imm_scores
+
+emt_scores %>% 
+  inner_join(csc_scores) %>% 
+  inner_join(inv_scores) %>% 
+  inner_join(int_scores) %>% 
+  #inner_join(imm_scores) %>%
+  filter(Patients%in%colnames(momix_barcode)) %>% 
+  column_to_rownames("Patients")-> lists_for_correlation 
+
+as.data.frame(t(momix_barcode))[rownames(lists_for_correlation),] -> barcodes_for_correlation
+
+# Calculate correlations
+score_correlations = data.frame(comparison=as.character(), pval=as.numeric(), rho=as.numeric())
+
+for (i in colnames(lists_for_correlation)){
+  
+  for (j in colnames(barcodes_for_correlation)){ 
+    
+    res=cor.test(lists_for_correlation[,i], barcodes_for_correlation[,j], method="spearman")
+    
+    k=paste(i,j, sep = ";")
+    pval=res$p.value
+    rho=as.numeric(res$estimate)
+    
+    df=data.frame(comparison=k, pval=pval, rho=rho)
+    
+    score_correlations=rbind(score_correlations,df)
+    
+    }
+}
+```
+
+
+# Plot heatmap for correlations (Figure 3 g)
+
+```{r}
+score_correlations %>% 
+  separate(comparison, into=c("compa","rison"), sep = ";") %>% 
+  select(-pval) %>% 
+  pivot_wider(names_from = compa, values_from = rho) %>% 
+  column_to_rownames("rison") %>% 
+  select("EMT Score"=emt_score, "CSC Score"=csc_score, "INV Score"=inv_score, "INT Score"=int_score) %>% 
+  t() %>% 
+  Heatmap(show_row_dend = F,
+          show_column_dend = F,
+          name = "Spearman\nCorrelation",
+          column_names_rot = 45,
+          rect_gp = gpar(col = "gray80", lwd = 2),
+          width = 1*unit(60, "mm"),
+          height = 1*unit(50, "mm"),
+          cluster_rows = F,
+          row_names_gp = gpar(fontsize = 15, fontface="bold"),
+          column_names_gp = gpar(fontsize= 15, fontface="bold"),
+          heatmap_legend_param = list(title = "Spearman\nCorrelation", title_gp = gpar(fontface="bold", fontsize = 20), labels_gp = gpar(fontsize = 15), legend_direction="horizontal"),
+          col = colorRamp2(c(0.3,0.8), c( "white", "maroon4"))) -> ht
+
+
+draw(ht, heatmap_legend_side = "top")
+
+```
+
+# Check difference across ECM grades (Figure 3 h-k, Supp. Figure 3 l)
+
+```{r}
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, emt_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, colour = "black"),
+        axis.text.y = element_text(size=20, colour = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("EMT Score") -> emt_plot
+
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, csc_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, colour = "black"),
+        axis.text.y = element_text(size=20, colour = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("CSC Score") -> csc_plot
+
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, inv_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, colour = "black"),
+        axis.text.y = element_text(size=20, colour = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("INV Score") -> inv_plot
+
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, int_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, colour = "black"),
+        axis.text.y = element_text(size=20, colour = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("INT Score") -> int_plot
+
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, imm_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=value, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, colour = "black"),
+        axis.text.y = element_text(size=20, colour = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Immune Suppression Score") -> immsup
+
+
+emt_plot+csc_plot+inv_plot+int_plot
+
+```
+
+```{r}
+lists_for_correlation %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, csc_score) %>% 
+  na.omit(.) %>% 
+  melt() %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest", "poor", "rich", "richest")))   -> df
+  
+kruskal.test(value ~ ecm_type, data = df)
+```
+
+
+## $$ CORRELATION ANALYSIS END $$
+
+# $$ CLINICAL DATA ANALYSIS START $$
+
+# Survival Analysis
+
+```{r}
+survival_data %>% 
+  mutate(deceased=ifelse(vital_status == "Dead", TRUE,
+                         ifelse(vital_status == "Alive", FALSE, NA))) %>% 
+  mutate(recurrence=ifelse(progression_or_recurrence == "yes", TRUE,
+                           ifelse(progression_or_recurrence=="no", FALSE, NA))) %>% 
+  mutate(days_to_recurrence=ifelse(is.na(days_to_recurrence), days_to_last_known_disease_status, days_to_recurrence)) %>% 
+  select(patients, ecm_type, ECM_Grade, deceased, days_to_last_known_disease_status=days_to_last_known_disease_status, recurrence, days_to_recurrence) -> survival_data_final
+```
+
+```{r}
+survival_data_final %>% 
+  count(deceased)
+
+survival_data_final %>% 
+  count(recurrence)
+```
+
+# Figure 4 a
+
+```{r}
+fit_surv = survfit(Surv(days_to_last_known_disease_status, deceased) ~ ECM_Grade, data=survival_data_final)
+
+survdiff(Surv(days_to_last_known_disease_status, deceased) ~ ECM_Grade, data=survival_data_final)
+
+# Visualize
+
+ggsurvplot(fit_surv, 
+           legend = "right",
+           data=survival_data_final, 
+           pval=F, 
+           palette = c( '#B6CEC7','#86A3C3', '#7268A6', '#6B3074'),
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nAlive",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15))
+
+
+fit_rec = survfit(Surv(days_to_recurrence, recurrence) ~ ECM_Grade, data=survival_data_final)
+
+survdiff(Surv(days_to_recurrence, recurrence) ~ ECM_Grade, data=survival_data_final)
+
+# Visualize
+
+ggsurvplot(fit_rec, 
+           legend = "right",
+           data=survival_data_final, 
+           pval=F, 
+           palette = c( '#B6CEC7','#86A3C3', '#7268A6', '#6B3074'),
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nRecurrence-Free",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15))
+
+```
+
+# Short term survival and recurrence  (Figure 4 b)
+
+```{r}
+survival_data_final %>% 
+  select(ECM_Grade, days_to_last_known_disease_status, deceased ) %>%  
+  mutate(deceased=ifelse(days_to_last_known_disease_status<=600 & deceased == T, T, F)) %>% 
+  mutate(days_to_last_known_disease_status=ifelse(days_to_last_known_disease_status<=600, days_to_last_known_disease_status, 600)) -> shortterm_surv 
+
+shortterm_surv  %>% filter(ECM_Grade=="ECM-G1" | ECM_Grade=="ECM-G4") -> shortterm_surv_p
+
+fit_surv_short = survfit(Surv(days_to_last_known_disease_status, deceased) ~ ECM_Grade, data=shortterm_surv_p)
+
+survdiff(Surv(days_to_last_known_disease_status, deceased) ~ deceased, data=shortterm_surv_p)
+
+# Visualize
+
+ggsurvplot(fit_surv_short,
+           legend = "right",
+           data=shortterm_surv_p, 
+           pval=T, 
+           palette = c("#B6CEC7", "#6B3074"), 
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nAlive",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15),
+           pval.size=7)
+
+
+survival_data_final %>% 
+  select(ECM_Grade, days_to_recurrence, recurrence) %>%  
+  mutate(recurrence=ifelse(days_to_recurrence<=320 & recurrence == T, T, F)) %>% 
+  mutate(days_to_recurrence=ifelse(days_to_recurrence<=320, days_to_recurrence, 320)) -> shortterm_rec 
+
+shortterm_rec  %>% filter(ECM_Grade=="ECM-G1" | ECM_Grade=="ECM-G4") -> shortterm_rec_p
+
+fit_rec_short = survfit(Surv(days_to_recurrence, recurrence) ~ ECM_Grade, data=shortterm_rec_p)
+
+survdiff(Surv(days_to_recurrence, recurrence) ~ ECM_Grade, data=shortterm_rec_p)
+
+# Visualize
+
+ggsurvplot(fit_rec_short, 
+           data=shortterm_rec_p, 
+           legend = "right",
+           pval=T, 
+           palette = c("#B6CEC7", "#6B3074"), 
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nRecurrence-Free",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15),
+           pval.size=7)
+
+```
+
+# Tumor grade survival analysis (Supp. Figure 4 b)
+
+```{r}
+survival_data %>% 
+  mutate(deceased=ifelse(vital_status == "Dead", TRUE,
+                         ifelse(vital_status == "Alive", FALSE, NA))) %>% 
+  mutate(recurrence=ifelse(progression_or_recurrence == "yes", TRUE,
+                           ifelse(progression_or_recurrence=="no", FALSE, NA))) %>% 
+  mutate(days_to_recurrence=ifelse(is.na(days_to_recurrence), days_to_last_known_disease_status, days_to_recurrence)) %>% 
+  select(patients, tumor_grade, deceased, days_to_last_known_disease_status=days_to_last_known_disease_status, recurrence, days_to_recurrence) %>% 
+  filter(tumor_grade!="GX") -> survival_data_final_tg
+
+survival_data_final_tg  %>% filter(tumor_grade=="G2" | tumor_grade=="G3") -> g23
+
+fit_surv = survfit(Surv(days_to_last_known_disease_status, deceased) ~ tumor_grade, data=survival_data_final_tg)
+
+survdiff(Surv(days_to_last_known_disease_status, deceased) ~ tumor_grade, data=survival_data_final_tg)
+
+ggsurvplot(fit_surv, 
+           legend = "right",
+           data=g23, 
+           pval=T, 
+           #palette = c( '#B6CEC7','#86A3C3', '#7268A6', '#6B3074'),
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nAlive",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15))
+
+
+fit_rec = survfit(Surv(days_to_recurrence, recurrence) ~ tumor_grade, data=survival_data_final_tg)
+
+survdiff(Surv(days_to_recurrence, recurrence) ~ tumor_grade, data=survival_data_final_tg)
+
+ggsurvplot(fit_rec, 
+           legend = "right",
+           data=survival_data_final_tg, 
+           pval=T, 
+           #palette = c( '#B6CEC7','#86A3C3', '#7268A6', '#6B3074'),
+           legend.title="", 
+           xlab="Time (days)",
+           ylab="Proportion\nRecurrence-Free",
+           font.x = c(20, face = "bold"),
+           font.y = c(20, face = "bold"), 
+           font.legend = c(20, face = "bold"),
+           font.tickslab = c(15))
+
+```
+
+# Cox test (Figure 4 c)
+
+```{r}
+survival_data_final %>% 
+  inner_join(clinical_cbio1) %>% 
+  mutate(SMOKING=ifelse(SMOKING_STATUS=="Not Available", NA, SMOKING_STATUS))  -> data_for_cox
+
+cox_model <- coxph(Surv(days_to_last_known_disease_status, deceased) ~ AGE + SEX + SMOKING + ECM_Grade, data = data_for_cox)
+
+summary(cox_model)
+
+ggforest(cox_model, data = as.data.frame(data_for_cox), fontsize = 1) -> cox_out
+
+```
+
+# Pie charts on clinicals (Figure 4 d)
+
+```{r}
+combined_clinicals %>% select(`ECM Grade`,"CATEGORY"=SEX) %>% 
+  group_by(`ECM Grade`) %>% 
+  count(CATEGORY) %>% 
+  mutate(Percentage=(n/sum(n))*100)%>% 
+  mutate(`ECM Grade`=factor(`ECM Grade`, levels = c("ECM-G1", "ECM-G2", "ECM-G3", "ECM-G4"))) -> sx
+
+combined_clinicals %>% select(`ECM Grade`,"CATEGORY"=MRNA_EXPRESSION_SUBTYPE_TCGA) %>% 
+  group_by(`ECM Grade`) %>% 
+  count(CATEGORY) %>% 
+  mutate(Percentage=(n/sum(n))*100)%>% 
+  mutate(`ECM Grade`=factor(`ECM Grade`, levels = c("ECM-G1", "ECM-G2", "ECM-G3", "ECM-G4"))) -> rnasub
+
+combined_clinicals %>% select(`ECM Grade`, "CATEGORY"=CIMP_STATUS) %>% 
+  group_by(`ECM Grade`) %>% 
+  count(CATEGORY) %>% 
+  mutate(Percentage=(n/sum(n))*100)%>% 
+  mutate(`ECM Grade`=factor(`ECM Grade`, levels = c("ECM-G1", "ECM-G2", "ECM-G3", "ECM-G4")))-> cimp
+
+combined_clinicals %>% select(`ECM Grade`, "CATEGORY"=tumor_grade) %>% 
+  group_by(`ECM Grade`) %>% 
+  count(CATEGORY) %>% 
+  mutate(Percentage=(n/sum(n))*100)%>% 
+  mutate(`ECM Grade`=factor(`ECM Grade`, levels = c("ECM-G1", "ECM-G2", "ECM-G3", "ECM-G4")))-> t_grade
+
+
+# Function to create pie chart for a given dataset
+create_pie_chart_custom_legend <- function(data, title, legend_title) {
+  ggplot(data, aes(x = "", y = Percentage, fill = CATEGORY)) +
+    geom_bar(stat = "identity", width = 1) +
+    coord_polar(theta = "y") +
+    labs(title = title, x = NULL, y = NULL, fill = legend_title) +
+    theme_void() +
+    theme(legend.position = "right",
+          legend.text = element_text(size = 15),
+          title = element_text(size=15, face="bold"),
+          strip.text = element_text(size = 15)) +
+    facet_wrap(~ `ECM Grade`, nrow = 1)
+}
+
+# Create pie charts
+sx_plot <- create_pie_chart_custom_legend(sx, "Sex", "Sex")
+rnsub_plot <- create_pie_chart_custom_legend(rnasub, "mRNA Subtype", "mRNA Subtype")
+cimp_plot <- create_pie_chart_custom_legend(cimp, "CIMP Status", "CIMP Status")
+tgrade_plot <- create_pie_chart_custom_legend(t_grade, "Tumor Grade", "Tumor Grade")
+
+# Combine the plots using patchwork
+combined_plot <- (sx_plot / rnsub_plot / cimp_plot / tgrade_plot) + plot_layout(guides = "collect")
+
+print(combined_plot)
+
+```
+
+# Supp. Figure 4 a
+
+```{r}
+combined_clinicals %>% 
+  select(`ECM Grade`, "CATEGORY" = tumor_grade) %>% 
+  filter(CATEGORY != "GX") %>% 
+  mutate(
+    pool = ifelse(
+      `ECM Grade` %in% c("ECM-G1", "ECM-G2"),
+      "ECM-G1+ECM-G2",
+      "ECM-G3+ECM-G4"
+    )
+  ) %>% 
+  select(-`ECM Grade`) %>% 
+  group_by(pool) %>% 
+  count(CATEGORY) %>% 
+  mutate(Percentage = (n / sum(n)) * 100) %>% 
+  ggplot(aes(
+    x = CATEGORY,
+    y = Percentage,
+    group = 1
+  )) +
+  geom_col(
+    fill = "lightblue",
+    color = "lightblue"
+  ) +
+  geom_point(size = 0) +
+  facet_wrap(
+    ~ pool,
+    ncol = 1,
+    scales = "free_y"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.border = element_rect(
+      color = "grey",
+      fill = NA,
+      linewidth = 0.5
+    ),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(size = 15),
+    axis.text  = element_text(size = 15),
+    strip.text = element_text(size = 15)
+  ) +
+  labs(
+    x = "Tumor Grade",
+    y = "Percentage (%)"
+  )
+
+```
+
+# Mutation (Figure 4 e)
+
+```{r}
+mutation_colors <- c("Frame_Shift_Del" = "#FFFF99",
+                     "Frame_Shift_Ins" = "#FF7F00",
+                     "In_Frame_Del" = "#33A02C",
+                     "In_Frame_Ins" = "lightblue",
+                     "Missense_Mutation" = "#1F78B4",
+                     "Nonsense_Mutation" = "#E31A1C",
+                     "Unspecified_Mutation" = "#A6CEE3",
+                     "Splice_Site" = "#6A3D9A",
+                     "No_Mutation" = "gray95")
+
+heatanno=HeatmapAnnotation(df = select(combined_clinicals, 
+                                       "ECM Grade", 
+                                       "TP53" = TP53_MUTATION,
+                                       "KRAS" = KRAS_MUTATION,
+                                       "EGFR" = EGFR_MUTATION,
+                                       "STK11" = STK11_MUTATION,
+                                       "KEAP1" = KEAP1_MUTATION,
+                                       "RB1" = RB1_MUTATION,
+                                       "BRAF" = BRAF_MUTATION,
+                                       "ALK FUSION"=ALK_FUSION,
+                                       "ROS1 FUSION"=ROS1_FUSION,
+                                       "RET FUSION"=RET_FUSION),
+                           "SOMATIC MUTATIONS" = anno_barplot(combined_clinicals$NUMBER_SOMATIC_MUTATIONS),
+                           show_legend = c(TRUE, TRUE, TRUE, TRUE, TRUE, rep(FALSE, times=5), TRUE),
+                           annotation_name_gp = gpar(fontsize=10,fontface = "bold"),
+                           annotation_legend_param = list("ECM Grade"=list(title="ECM Grade",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15)),
+                                                          TP53=list(title="Mutation",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15)),
+                                                          KRAS=list(title="Mutation2",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15)),
+                                                          EGFR=list(title="Mutation3",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15)),
+                                                          STK11=list(title="Mutation4",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15)),
+                                                          "RET FUSION"=list(title="Fusion",title_gp = gpar(fontface="bold", fontsize = 15),labels_gp = gpar(fontsize = 15))),
+                           annotation_height =  unit(c(10,rep(4,times=11)), "mm"),
+                           col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074'),
+                                      TP53 = mutation_colors,
+                                      KRAS = mutation_colors,
+                                      STK11 = mutation_colors,
+                                      EGFR = mutation_colors,
+                                      KEAP1 = mutation_colors,
+                                      RB1 = mutation_colors,
+                                      BRAF = mutation_colors,
+                                      "ALK FUSION" = c("0" ="gray95", "1" ="black"),
+                                      "ROS1 FUSION" = c("0" ="gray95", "1" ="black"),
+                                      "RET FUSION" = c("0" ="gray95", "1" ="black")))
+ 
+col_fun=colorRamp2(c(-2,0,2), c("navy","white","maroon4"))
+
+momix_barcode[combined_clinicals$patients] %>% 
+  as.matrix() %>% 
+  Heatmap(
+    name = "ECM Score", 
+    col = col_fun, 
+    column_title = "Patients",
+    border_gp = gpar(fontsize=10,fontface = "bold"),
+    show_column_names = FALSE,
+    show_row_names = F,
+    row_names_side = "right",
+    show_row_dend = FALSE,
+    cluster_rows = TRUE,
+    cluster_columns = FALSE,
+    row_title_side = "left",
+    column_title_side = "top",
+    row_dend_side = "left",
+    column_names_gp = gpar(fontsize=0,fontface="bold"),
+    column_title_gp  = gpar(fontsize=15,fontface="bold"),
+    column_names_centered = TRUE, 
+    row_names_gp = gpar(fontsize=15,fontface="bold"),
+    column_names_rot = 0,
+    column_km = 4,
+    top_annotation = heatanno,
+    height=unit(10,"mm"),
+    width=unit(100, "mm"),
+    heatmap_legend_param = list(title_gp=gpar(fontsize = 15,fontface="bold"), 
+                                labels_gp=gpar(fontsize = 15))) -> heatmap
+
+
+draw(heatmap, heatmap_legend_side="left", annotation_legend_side="bottom")
+
+```
+
+# Hyper-geometric test 
+
+```{r}
+combined_clinicals %>% 
+  select(ecm_type, EGFR_MUTATION, KRAS_MUTATION) %>% 
+  mutate(EGFR_stat=ifelse(EGFR_MUTATION=="No_Mutation", 0, 1)) %>% 
+  mutate(KRAS_stat=ifelse(KRAS_MUTATION=="No_Mutation", 0, 1)) %>% 
+  select(-ends_with("MUTATION")) %>% 
+  group_by(ecm_type, EGFR_stat) %>% 
+  count() %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = ecm_type, values_from = n) %>% 
+  column_to_rownames("EGFR_stat") -> egfr_cont
+
+combined_clinicals %>% 
+  select(ecm_type, EGFR_MUTATION, KRAS_MUTATION) %>% 
+  mutate(EGFR_stat=ifelse(EGFR_MUTATION=="No_Mutation", 0, 1)) %>% 
+  mutate(KRAS_stat=ifelse(KRAS_MUTATION=="No_Mutation", 0, 1)) %>% 
+  select(-ends_with("MUTATION")) %>% 
+  group_by(ecm_type, KRAS_stat) %>% 
+  count() %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = ecm_type, values_from = n) %>% 
+  column_to_rownames("KRAS_stat") -> kras_cont 
+
+combined_clinicals %>% 
+  select(ecm_type, EGFR_MUTATION, KRAS_MUTATION) %>% 
+  mutate(EGFR_stat=ifelse(EGFR_MUTATION=="No_Mutation", 0, 1)) %>% 
+  mutate(KRAS_stat=ifelse(KRAS_MUTATION=="No_Mutation", 0, 1)) %>% 
+  select(-ends_with("MUTATION")) %>% 
+  group_by(ecm_type) %>% 
+  count() 
+```
+
+# EGFR on low grades
+
+```{r}
+rowSums(egfr_cont)
+
+egfr_cont %>% 
+  mutate(low_grade=rowSums(across(1:2))) %>% 
+  mutate(hi_grade=rowSums(across(3:4))) %>% 
+  select(ends_with("grade")) -> cont_egfr
+
+phyper( q=28-1,               # number of mutated patients in the group - 1 (see below)
+        m=36,         # number of mutated patients in cohort
+        n=101-36, # number of non-mutated patients in cohort
+        k=56,       # Number of patients in the group
+        lower.tail=FALSE)  
+```
+
+# KRAS on high grades
+
+```{r}
+rowSums(kras_cont)
+
+kras_cont %>% 
+  mutate(low_grade=rowSums(across(1:2))) %>% 
+  mutate(hi_grade=rowSums(across(3:4))) %>% 
+  select(ends_with("grade")) -> cont_kras
+
+phyper( q=20-1,               # number of mutated patients in the group - 1 (see below)
+        m=30,         # number of mutated patients in cohort
+        n=101-30, # number of non-mutated patients in cohort
+        k=45,       # Number of patients in the group
+        lower.tail=FALSE)  
+```
+
+# Mutation profiles on ECM genes (Supp. Figure 4 c)
+
+```{r}
+data_mutations <- read_delim("data/cbioportal/luad_cptac_2020/data_mutations.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE) %>% 
+  select(Hugo_Symbol, Variant_Classification, Tumor_Sample_Barcode)
+
+data_mutations %>% 
+  mutate(Tumor_Sample_Barcode=str_replace(Tumor_Sample_Barcode, "-", ".")) %>% 
+  filter(Tumor_Sample_Barcode%in%colnames(momix_barcode)) %>% 
+  filter(Hugo_Symbol%in%ecm$geneSymbol) -> ecm_mutations  # 94 of the patients have at least one mutation in ECM genes
+
+ecm_mutations %>% 
+  filter(Variant_Classification!="Silent") %>% 
+  mutate(state=1) %>% 
+  select(-Variant_Classification) %>% 
+  group_by(Tumor_Sample_Barcode, Hugo_Symbol) %>% 
+  summarize_all(sum) %>% 
+  pivot_wider(names_from = Tumor_Sample_Barcode, values_from = state) %>% 
+  mutate(across(everything(), ~ replace_na(.x, 0))) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  mutate_all(~ ifelse(. >= 1, 1, 0)) -> for_heat_bi
+  
+for_heat_bi%>% 
+  rownames_to_column("geneSymbol") %>% 
+  left_join(ecm, by="geneSymbol") %>% 
+  select(-Division, -geneSymbol) %>% 
+  group_by(Category) %>% 
+  summarize_all(sum) %>% 
+  column_to_rownames("Category") -> categories_mut_bi
+
+for_heat_bi %>% 
+  summarise_all(sum) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  group_by(`ECM Grade`) %>% 
+  select(-consensuscluster, -ecm_type, -patients) %>% 
+  summarize_all(median) %>% rename("Matrisome"=V1)-> whole
+
+categories_mut_bi %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  group_by(`ECM Grade`) %>% 
+  select(-consensuscluster, -ecm_type, -patients) %>% 
+  summarize_all(median) %>% 
+  inner_join(whole) %>% 
+  pivot_longer(-`ECM Grade`, names_to = "ECM_category", values_to = "score") %>% 
+  mutate(
+    ECM_category = factor(
+      ECM_category,
+      levels = c(
+        "Matrisome",
+        "Collagens",
+        "ECM Glycoproteins",
+        "Proteoglycans",
+        "ECM Regulators",
+        "Secreted Factors",
+        "ECM-affiliated Proteins"))) %>% 
+  ggplot(aes(
+    x = `ECM Grade`,
+    y = score,
+    group = 1,
+    color = `ECM Grade`
+  )) +
+  geom_line(
+    linewidth = 1.1,
+    linetype = "dashed",
+    color = "grey"
+  ) +
+  geom_point(size = 2) +
+  facet_wrap(
+    ~ ECM_category,
+    ncol = 1,
+    scales = "free_y"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.border = element_rect(
+      color = "grey",
+      fill = NA,
+      linewidth = 0.5
+    ),
+  panel.grid.minor = element_blank(),
+  panel.spacing.y = unit(1.2, "lines"))+
+  labs(
+    x = "ECM Grade",
+    y = "Median Mutation Count"
+  )+
+  scale_color_manual(
+  values = c(
+    "ECM-G1" = "#B6CEC7",
+    "ECM-G2" = "#86A3C3",
+    "ECM-G3" = "#7268A6",
+    "ECM-G4" = "#6B3074"
+  )) 
+```
+
+## $$ CLINICAL DATA ANALYSIS END $$
+
+## $$ NETWORK ANALYSIS START $$
+
+## $$ PREPARATION OF INPUT DATA START $$
+
+# Prepare reference interactome
+
+```{r}
+iref=read_tsv("data/reference_interactome/iRefIndex_v14_MIScore_interactome_C9.costs.txt")
+
+# exclude hub proteins “UBC”, “APP”, “ELAVL1”, “SUMO2“, “CUL3”
+iref %>% 
+  filter(protein1!="UBC" & protein1!="APP" & protein1!="ELAVL1" & protein1!="SUMO2" & protein1!="CUL3" ) %>% 
+  filter(protein2!="UBC" & protein2!="APP" & protein2!="ELAVL1" & protein2!="SUMO2" & protein2!="CUL3" ) # %>%  write_tsv("data/reference_interactome/iref_nohub.tsv")
+```
+
+# Prepare terminals
+
+```{r, message=FALSE}
+
+patients=(momix_cluster_annotation %>% select(patients))$patients %>% as.vector() 
+
+terminal_count=data.frame(patient=as.character(), terminal_count=as.numeric())
+
+for (i in patients){
+  
+  trx_file_names=paste0("out_data/trx_data/", i, ".tsv")
+  target_prizes=read_tsv(trx_file_names)
+  
+  tf_file_names=paste0("out_data/TRRUST/", i, ".tsv")
+  
+  read_tsv(tf_file_names) %>% 
+    filter(`Q value`<0.1) %>% 
+    separate_rows(`List of overlapped genes`, sep=",") %>% 
+    inner_join(target_prizes, by=c("List of overlapped genes"="name")) %>% 
+    group_by(`Key TF`) %>%
+    summarise_at(vars(prize),mean) %>% 
+    mutate(Category="TF") %>% 
+    select("name"=`Key TF`, prize, Category) -> tfs
+  
+  pptx_file_names=paste0("out_data/pptx_data/", i, ".tsv")
+  
+  read_tsv(pptx_file_names) %>% 
+    select(-Division) -> ppts
+  
+  combined=rbind(tfs, ppts)
+  
+   terminal_file_name=paste0("out_data/terminals/", i, ".tsv")
+   write_tsv(combined, terminal_file_name)
+  
+  #get terminal count
+  data.frame(patient=i, terminal_count=nrow(combined)) -> pterms 
+  terminal_count=rbind(terminal_count, pterms)
+  
+}
+
+#write_csv(terminal_count, "out_data/network_data/terminal_count.csv")
+terminal_count=read_csv("out_data/network_data/terminal_count.csv")
+```
+
+# Check terminal count per patient
+
+```{r}
+summary(terminal_count)
+
+terminal_count %>% 
+  ggplot( aes(x="", y = terminal_count	)) +
+  #ggtitle("number of terminals \nper patient")+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Terminal Count")+
+  ylim(50,200)+
+  theme_minimal()+
+  theme(axis.title = element_text(face="bold", size =25),
+        axis.text.y = element_text(size = 20),
+        title = element_text(size=25, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black"))  -> terminal_violin
+```
+
+## $$ PREPARATION OF INPUT DATA END $$
+
+## $$ ANALYSIS ON NETWORKS $$ 
+
+# Get node membership and count nodes
+
+```{r, message=FALSE}
+all_nodes=data.frame(nodes=as.character())
+node_count=data.frame(patients=as.character(), counts=as.numeric())
+
+for (i in patients){ 
+  
+  filename=paste0("patients/", i, "/", i, "_nodes.csv")
+  
+  node_file=read_csv(filename)
+  
+   node_file %>% 
+    rename("nodes"="...1") %>% 
+    distinct(nodes) %>% 
+    mutate(x=1) %>% 
+    rename_with(~i, .cols = x) -> patient_nodes
+   
+   all_nodes=full_join(all_nodes,patient_nodes)
+   
+   node_file %>% 
+    rename("nodes"="...1") %>% 
+    distinct(nodes) %>% 
+    count() %>% 
+    mutate(patients=i) %>% 
+    rename(counts=n) %>% 
+    select(patients,counts) -> patient_node_counts
+  
+  node_count=rbind(node_count, patient_node_counts)
+
+}
+
+all_nodes=all_nodes %>% mutate_all(~replace_na(.,0))
+
+#write_csv(all_nodes,"out_data/network_data/all_nodes.csv")
+#write_csv(node_count,"out_data/network_data/node_count.csv")
+```
+
+# Count edges 
+
+```{r, message=FALSE}
+edge_count=data.frame(patients=as.character(), counts=as.numeric())
+cost_avg=data.frame(patients=as.character(), avg_cost=as.numeric())
+
+for (i in patients){
+  
+  filename=paste0("patients/", i, "/", i, "_edges.csv")
+  
+  edge_file=read_csv(filename)
+  
+   edge_file %>% 
+    filter(in_solution==TRUE) %>% 
+    count() %>% 
+    mutate(patients=i) %>% 
+    rename(counts=n) %>% 
+    select(patients,counts) -> patient_edge_counts
+  
+  edge_count=rbind(edge_count, patient_edge_counts)
+  
+  edge_file %>% 
+    filter(in_solution==TRUE) %>% 
+    select(cost) %>% 
+    colMeans() %>% 
+    as.data.frame() %>% 
+    mutate(patients=i) %>% 
+    rename("avg_cost"=".") %>% 
+    remove_rownames() %>% 
+    select(patients,avg_cost) -> patient_cost_avg
+  
+  cost_avg=rbind(cost_avg, patient_cost_avg)
+
+}
+
+#write_csv(edge_count,"out_data/network_data/edge_count.csv")
+#write_csv(cost_avg,"out_data/network_data/cost_avg.csv")
+```
+
+```{r}
+patients=list.files("patients/") 
+all_nodes=read_csv("out_data/network_data/all_nodes.csv")
+node_count=read_csv("out_data/network_data/node_count.csv") 
+edge_count=read_csv("out_data/network_data/edge_count.csv") 
+cost_avg=read_csv("out_data/network_data/cost_avg.csv") 
+```
+
+# About nodes, edges and cost 
+
+```{r}
+summary(node_count)
+summary(edge_count)
+summary(cost_avg)
+```
+
+```{r}
+node_count %>% 
+  ggplot( aes(x="", y = counts	)) +
+  #ggtitle("number of nodes \nper patient")+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Node Count")+
+  ylim(100,300)+
+  theme_minimal()+
+  theme(axis.title = element_text(face="bold", size =25),
+        axis.text.y = element_text(size = 20),
+        title = element_text(size=25, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black")) -> node_violin
+
+edge_count %>% 
+  ggplot( aes(x="", y = counts	)) +
+  #ggtitle("number of edges \nper patient")+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Edge Count")+
+  ylim(100,400)+
+  theme_minimal()+
+  theme(axis.title = element_text(face="bold", size =25),
+        axis.text.y = element_text(size = 20),
+        title = element_text(size=25, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black"))-> edge_violin
+
+cost_avg %>% 
+  mutate(confidence=1-avg_cost) %>% 
+  ggplot( aes(x="", y = confidence	)) +
+  #ggtitle("average edge confidence \nper patient", subtitle ="In-Solution")+
+  geom_violin(fill='slategray1') +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.3, fill="blue")+
+  labs(x = "", y = "Average Confidence")+
+  ylim(0.55, 0.7)+
+  theme_minimal()+
+  theme(axis.title = element_text(face="bold", size =25),
+        axis.text.y = element_text(size = 20),
+        title = element_text(size=25, face="bold"),
+        panel.background = element_blank(),
+        #plot.background = element_rect(colour = "black", fill=NA, size=1),
+        axis.line = element_line(colour = "black"))-> confidence_violin
+```
+
+# Draw patient-specific network data (Supp. Figure 5 a)
+
+```{r}
+grid.arrange(terminal_violin ,node_violin , edge_violin , confidence_violin, ncol=4 , bottom=textGrob("Patients", gp = gpar(fontsize = 20, fontface="bold")))
+```
+
+# About consensus network 
+
+```{r}
+consensus_insol=read_csv("out_data/network_data/consensus_insol/consensus_metrics_insol.csv") %>% 
+  select(-second_largest_component, -second_largest_nodes)
+
+max_len = 1000
+
+consensus_insol %>%
+  filter((ecm_type=="poor" & consensus_type=="below_11") |
+           (ecm_type=="poorest" & consensus_type=="below_6") |
+           (ecm_type=="rich" & consensus_type=="below_10") |
+           (ecm_type=="richest" & consensus_type=="below_4")) %>% 
+  select(ecm_type, largest_nodes) %>% 
+  separate(largest_nodes, into = paste0("x_", seq_len(max_len)),sep = ";") %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  remove_rownames(.) -> consensus_nodes_core 
+
+#write_csv(consensus_nodes_core,"out_data/network_data/consensus_insol/consensus_30pcnt_insol.csv")
+consensus_nodes_core=read_csv("out_data/network_data/consensus_insol/consensus_30pcnt_insol.csv")
+```
+
+# Check mutuality (Figure 5 a)
+
+```{r}
+lt = list("ECM-G1" = na.omit(consensus_nodes_core$poorest),
+          "ECM-G2" = na.omit(consensus_nodes_core$poor),
+          "ECM-G3" = na.omit(consensus_nodes_core$rich),
+          "ECM-G4" = na.omit(consensus_nodes_core$richest))
+m = make_comb_mat(lt, mode="distinct")
+UpSet(m, comb_order = order(comb_size(m),decreasing = T))
+
+ggvenn(lt, fill_color = c("#B6CEC7", "#86A3C3", "#7268A6", "#6B3074"), set_name_size = 10, text_size = 8)
+
+```
+
+# Jaccard similarity between consensus networks (Supp. Figure 5 b)
+
+```{r}
+# Function to calculate Jaccard similarity
+jaccard_similarity <- function(list1, list2) {
+  intersect_len <- length(intersect(list1, list2))
+  union_len <- length(union(list1, list2))
+  return(intersect_len / union_len)
+}
+
+# Calculate pairwise Jaccard similarities
+num_conditions <- length(lt)
+similarity_matrix <- matrix(0, nrow = num_conditions, ncol = num_conditions)
+rownames(similarity_matrix) <- names(lt)
+colnames(similarity_matrix) <- names(lt)
+
+for (i in 1:num_conditions) {
+  for (j in 1:num_conditions) {
+    similarity_matrix[i, j] <- jaccard_similarity(lt[[i]], lt[[j]])
+  }
+}
+
+
+similarity_matrix %>% 
+  Heatmap(col = colorRamp2(c(0.5, 1), c( "white", "maroon4")),
+          name = "Jaccard\nSimilarity",
+          width = 1*unit(50, "mm"),
+          height = 1*unit(50, "mm"),
+          column_names_gp = gpar(size=20, fontface="bold"),
+          row_names_gp = gpar(size=20, fontface="bold"),
+          rect_gp = gpar("grey65"),
+          heatmap_legend_param = list(title = "Jaccard\nSimilarity", title_gp = gpar(fontface="bold", fontsize = 13), labels_gp = gpar(fontsize = 13)))
+
+```
+
+# Network score 
+
+```{r}
+all_nodes_wdata=data.frame(nodes=as.character())
+
+for (i in patients){
+  
+  trx_zscores_raw %>% 
+    select("nodes"=Hugo_Symbol, i) %>% 
+    rename(!!paste0(i,"_trx"):=i)-> ptnt_trx
+  
+  all_nodes %>% 
+    select(nodes,i) %>% 
+    filter(!!sym(i)==1) %>% 
+    rename(!!paste0(i,"_mem"):=i) %>% 
+    left_join(ptnt_trx) -> to_add
+  
+  all_nodes_wdata <- full_join(all_nodes_wdata,to_add)
+    
+}
+
+all_nodes_wdata %>% mutate(across(ends_with("_mem"), ~ replace_na(.x, 0))) -> all_nodes_wdata
+
+#write_csv(all_nodes_wdata, "out_data/network_data/all_nodes_wdata.csv")
+all_nodes_wdata=read_csv("out_data/network_data/all_nodes_wdata.csv")
+```
+
+```{r}
+annot_heat = HeatmapAnnotation(df = select(momix_cluster_annotation, `ECM Grade`),
+                               col = list(`ECM Grade`  = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                               annotation_name_gp = gpar(fontsize=15,fontface = "bold"),
+                              annotation_legend_param = list(`ECM Grade` = list( title = "ECM Grade",  
+                                                                                 title_gp = gpar(fontface="bold", fontsize = 15), 
+                                                                                 labels_gp = gpar(fontsize = 15))))
+
+
+all_nodes_wdata %>% 
+  column_to_rownames("nodes") %>% 
+  select(ends_with("_trx")) %>% 
+  select(paste0(momix_cluster_annotation$patients, "_trx")) %>% 
+  Heatmap(cluster_columns = F,
+          cluster_rows = F,
+          show_row_names = F,
+          show_column_names = F,
+          column_title = "Patients",
+          column_title_side = "bottom",
+          row_title = "Nodes",
+          name="z-score",
+          top_annotation = annot_heat,
+          column_title_gp = gpar(fontsize=20, fontface="bold"),
+          row_title_gp = gpar(fontsize=20, fontface="bold"),
+          col = colorRamp2(c(-1,0, 1), c("navy", "white" ,"maroon4")),
+          heatmap_legend_param = list(title = "z-score", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15))) -> H1
+
+draw(H1, merge_legends=T)
+```
+
+# Difference in network score across ECM grades (Figure 5 b)
+
+```{r}
+
+all_nodes_wdata %>% 
+  column_to_rownames("nodes") %>% 
+  select(ends_with("_trx")) %>% 
+  select(paste0(momix_cluster_annotation$patients, "_trx")) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  separate(rowname, into = c("patients", "rmov"), sep = "_") %>% 
+  select(-rmov) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest","poor","rich","richest"))) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size = 5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black")+
+  ylab("Network Score")
+
+```
+
+
+```{r}
+all_nodes_wdata %>% 
+  column_to_rownames("nodes") %>% 
+  select(ends_with("_trx")) %>% 
+  select(paste0(momix_cluster_annotation$patients, "_trx")) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  separate(rowname, into = c("patients", "rmov"), sep = "_") %>% 
+  select(-rmov) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  mutate(ecm_type=factor(ecm_type, levels=c("poorest","poor","rich","richest"))) -> df
+
+kruskal.test(V1 ~ ecm_type, data = df)
+```
+
+## $$ PATHWAY ENRICHMENT ANALYSIS START $$
+
+```{r}
+patient_enrichments=data.frame(Term=as.character())
+
+dbs <- c("MSigDB_Hallmark_2020") #  MSigDB_Hallmark_2020, KEGG_2021_Human, Reactome_2022, GO_Biological_Process_2023
+
+for (i in patients){ 
+  
+  trx_zscores_raw %>% 
+    select(Hugo_Symbol, i) %>% 
+    rename(!!paste0(i,"_trx"):=i) -> my_z_patient
+  
+  all_nodes %>% 
+    column_to_rownames("nodes") %>% 
+    select(i) %>% 
+    filter(!!sym(i)==1) -> patient_nodes
+  
+  enriched <- enrichr(rownames(patient_nodes), dbs) 
+  
+  max_length=str_count(enriched[[1]]$Genes, ";") + 1
+  
+  enriched[[1]] %>% 
+    filter(Adjusted.P.value<=0.05) %>% 
+    separate(col = "Overlap", into = c("Overlap", "Geneset"), sep = "/") %>% 
+    mutate(Overlap=as.numeric(Overlap)) %>% 
+    filter(Overlap>2) %>% 
+    mutate(Adj.p=-log10(Adjusted.P.value)) %>% 
+    arrange(desc(Adj.p)) %>% 
+    select(Term, Adj.p, Genes) %>% 
+    rename(!!paste0(i, "_Adj.p"):=Adj.p) %>% 
+    separate(Genes, into = paste0("x.",seq_len(max_length), sep=";")) %>% 
+    pivot_longer(starts_with("x."),  names_to = "remove", values_to = "geneSymbol") %>% 
+    filter(!is.na(geneSymbol)) %>% 
+    select(-remove) %>% 
+    #inner_join(cbio_trx_patient, by=c("geneSymbol"="Hugo_Symbol")) %>% 
+    inner_join(my_z_patient, by=c("geneSymbol"="Hugo_Symbol")) %>% 
+    select(-geneSymbol) %>% 
+    group_by(Term) %>% 
+    summarize_all(mean, na.rm=T) -> enrichments
+  
+  patient_enrichments <- full_join(patient_enrichments, enrichments, by="Term")
+  
+}
+
+#write_csv(patient_enrichments,"../out_data/enrichments/patient_enrichments_hall.csv")
+
+patient_enrichments_kegg=read_csv("out_data/enrichments/patient_enrichments_kegg.csv")
+patient_enrichments_hall=read_csv("out_data/enrichments/patient_enrichments_hall.csv")
+patient_enrichments_reac=read_csv("out_data/enrichments/patient_enrichments_reac.csv")
+patient_enrichments_gobp=read_csv("out_data/enrichments/patient_enrichments_gobp.csv")
+```
+
+# Filter and finalize KEGG pathways (Figure 5 c)
+
+```{r}
+patient_enrichments_kegg %>% 
+  column_to_rownames("Term") %>% 
+  select(ends_with("_trx")) %>% 
+  rename_with(~str_replace(.,"_trx","")) %>% 
+  #filter(rowSums(.)<75) %>% 
+  #filter(rowSums(.)>25) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(~ifelse(is.na(.),0,1)) %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients,-consensuscluster, -`ECM Grade`) %>% 
+  select(ecm_type, everything(.)) %>% 
+  group_by(ecm_type) %>% 
+  summarize_all(sum) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Pathways") %>% 
+  mutate(poorest=(poorest/21)*100) %>% 
+  mutate(poor=(poor/35)*100) %>% 
+  mutate(rich=(rich/32)*100) %>% 
+  mutate(richest=(richest/13)*100) %>% 
+  filter(poorest>=25 | poor>=25 | rich>=25 | richest>=25 ) -> cluster_wise_bottom_trim 
+
+
+patient_enrichments_kegg %>% 
+  filter(Term%in%cluster_wise_bottom_trim$Pathways) %>% 
+  select(Term, ends_with("_trx")) %>% 
+  rename_with(~str_replace(.,"_trx","")) %>% 
+  select(Term,momix_cluster_annotation$patients) %>% 
+  column_to_rownames("Term") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients, -consensuscluster, -`ECM Grade`) %>% 
+  select(ecm_type,everything()) %>% 
+  group_by(ecm_type) %>% 
+  summarise_all(mean, na.rm=T) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Term")  -> scores_calculated
+
+scores_calculated %>% 
+  filter(!str_detect(Term,"virus")&
+           !str_detect(Term,"Virus")&
+           !str_detect(Term,"infection")&
+           !str_detect(Term,"Infection")&
+           !str_detect(Term,"Hepatitis")&
+           !str_detect(Term,"disease")&
+           !str_detect(Term,"Disease")&
+           !str_detect(Term,"addiction")&
+           !str_detect(Term,"Addiction")&
+           !str_detect(Term,"Influenza")&
+           !str_detect(Term,"influenza")&
+           !str_detect(Term,"diabetic")&
+           !str_detect(Term,"Diabetic")&
+           !str_detect(Term,"insulin")&
+           !str_detect(Term,"Insulin")&
+           !str_detect(Term,"viral")&
+           !str_detect(Term,"Viral")&
+           !str_detect(Term,"^L")&
+           !str_detect(Term,"syndrome")&
+           !str_detect(Term,"Syndrome")&
+           !str_detect(Term,"Cholinergic")&
+           !str_detect(Term,"VEGF signaling")&
+           !str_detect(Term,"Hedgehog signaling")&
+           !str_detect(Term,"Calcium signaling")) %>% 
+  filter(str_detect(Term,"Adherens")|
+           str_detect(Term,"Apoptosis")|
+           str_detect(Term,"B cell receptor")|
+           str_detect(Term,"lectin receptor")|
+           str_detect(Term,"Cell cycle")|
+           str_detect(Term,"Cellular senescence")|
+           str_detect(Term,"Chemokine signaling")|
+           str_detect(Term,"Choline")|
+           str_detect(Term,"Complement")|
+           str_detect(Term,"Cytosolic")|
+           str_detect(Term,"ECM-receptor")|
+           str_detect(Term,"Estrogen")|
+           str_detect(Term,"Fluid shear")|
+           str_detect(Term,"Focal adhesion")|
+           str_detect(Term,"FoxO")|
+           str_detect(Term,"Growth hormone")|
+           str_detect(Term,"HIF-1")|
+           str_detect(Term,"Hippo")|
+           str_detect(Term,"IL-17")|
+           str_detect(Term,"JAK-STAT")|
+           str_detect(Term,"MAPK")|
+           str_detect(Term,"Mitophagy")|
+           str_detect(Term,"NF-kappa")|
+           str_detect(Term,"NOD-like")|
+           str_detect(Term,"Notch")|
+           str_detect(Term,"PI3K")|
+           str_detect(Term,"Parathyroid")|
+           str_detect(Term,"Pathways in cancer")|
+           str_detect(Term,"Platelet activation")|
+           str_detect(Term,"Proteoglycans in cancer")|
+           str_detect(Term,"RIG-I-like")|
+           str_detect(Term,"Rap1")|
+           str_detect(Term,"Ras signaling")|
+           str_detect(Term,"Relaxin")|
+           str_detect(Term,"pluripotency")|
+           str_detect(Term,"T cell receptor")|
+           str_detect(Term,"TGF-beta")|
+           str_detect(Term,"TNF")|
+           str_detect(Term,"Th1 and Th2 cell")|
+           str_detect(Term,"Th17 cell")|
+           str_detect(Term,"Toll-like")|
+           str_detect(Term,"Transcriptional")|
+           str_detect(Term,"Wnt signaling")|
+           str_detect(Term,"Apelin")|
+           str_detect(Term,"Leukocyte")|
+           str_detect(Term,"digestion and")|
+           str_detect(Term,"AMPK")|
+           str_detect(Term,"Calcium signaling")|
+           str_detect(Term,"Cell adhesion")|
+           str_detect(Term,"Central carbon")|
+           str_detect(Term,"Phospholipase D")|
+           str_detect(Term,"Regulation of actin")|
+           str_detect(Term,"Autophagy")|
+           str_detect(Term,"Gap junction")|
+           str_detect(Term,"Hedgehog")|
+           str_detect(Term,"VEGF")|
+           str_detect(Term,"p53")|
+           str_detect(Term,"Cytokine-cytokine")|
+           str_detect(Term,"Tight junction")) -> terms_filtered
+
+colnames(terms_filtered)=c('Term','ECM-G1' ,'ECM-G2' , 'ECM-G3', 'ECM-G4')
+
+df=data.frame(`ECM Grade` = c('ECM-G1', 'ECM-G2', 'ECM-G3', 'ECM-G4')) %>% rename("ECM Grade"="ECM.Grade")
+
+col_anno_code = HeatmapAnnotation(df = df,
+                                  col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                                  annotation_name_gp = gpar(fontsize=15,fontface = "bold"),
+                                  annotation_legend_param = list(`ECM Grade` = list(title = "ECM Grade",  title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15))))
+
+cluster_wise_bottom_trim %>% 
+  filter(Pathways%in%terms_filtered$Term) %>% 
+  column_to_rownames("Pathways") %>% 
+  select('ECM-G1'= 1 ,'ECM-G2'=2 , 'ECM-G3'=3, 'ECM-G4'=4) -> percentages
+
+(terms_filtered %>% column_to_rownames("Term"))[rownames(percentages),] -> scores
+
+annotate_percentage <- function(scores, percentages) {
+  annotations <- matrix("", nrow = nrow(scores), ncol = ncol(scores))
+  for (i in 1:nrow(scores)) {
+    if (percentages$'ECM-G1'[i] < 25) annotations[i, 1] <- "*"
+    if (percentages$'ECM-G2'[i] < 25) annotations[i, 2] <- "*"
+    if (percentages$'ECM-G3'[i] < 25) annotations[i, 3] <- "*"
+    if (percentages$'ECM-G4'[i] < 25) annotations[i, 4] <- "*"
+  }
+  return(annotations)
+}
+
+annotations <- annotate_percentage(scores, percentages)
+
+scores %>% 
+  Heatmap(cluster_columns = F,
+          cluster_rows = T,
+          show_row_dend = F,
+          show_column_names = F,
+          col = colorRamp2(c(-0.5,0,0.5),c("navy","white","maroon4")),
+          height=1*unit(250,"mm"),
+          width=1*unit(50,"mm"),
+          column_names_rot = 0,
+          column_names_centered = T,
+          row_names_gp = gpar(fontsize=13),
+          name = "Enrichment\nScore",
+          top_annotation = col_anno_code,
+          column_title = "KEGG Pathways",
+          column_title_side = "top", 
+          column_title_gp = gpar(fontsize=15, fontface="bold"),
+          show_row_names = T,
+          heatmap_legend_param = list(title = "Enrichment\nScore", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15)),
+          cell_fun = function(j, i, x, y, width, height, fill) {grid.text(annotations[i, j], x, y, gp = gpar(fontsize = 15, col = "black"))}) -> ptx_heat
+
+
+draw(ptx_heat, merge_legend = T, heatmap_legend_side="left")
+
+```
+
+# Significantly enriched KEGG pathways across ECM grades (Figure 5 d-f)
+
+```{r}
+patient_enrichments_kegg %>% 
+  filter(str_detect(Term,"ECM")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("ECM-Receptor Interaction") -> k1
+
+patient_enrichments_kegg %>% 
+  filter(str_detect(Term,"PI3K")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("PI3K-Akt Signaling Pathway") -> k2
+
+patient_enrichments_kegg %>% 
+  filter(str_detect(Term,"Focal")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("Focal Adhesion") -> k3
+
+k1+k2+k3
+```
+
+
+```{r}
+patient_enrichments_kegg %>% 
+  filter(str_detect(Term,"PI3K")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) -> df
+
+kruskal.test(V1 ~ ecm_type, data = df)
+```
+
+# Filter and finalize Hallmarks (Figure  5 g)
+
+```{r}
+patient_enrichments_hall %>% 
+  column_to_rownames("Term") %>% 
+  select(ends_with("_trx")) %>% 
+  rename_with(~str_replace(.,"_trx","")) %>% 
+  #filter(rowSums(.)<75) %>% 
+  #filter(rowSums(.)>25) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  mutate_all(~ifelse(is.na(.),0,1)) %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients,-consensuscluster, -`ECM Grade`) %>% 
+  select(ecm_type, everything(.)) %>% 
+  group_by(ecm_type) %>% 
+  summarize_all(sum) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Pathways") %>% 
+  mutate(poorest=(poorest/21)*100) %>% 
+  mutate(poor=(poor/35)*100) %>% 
+  mutate(rich=(rich/32)*100) %>% 
+  mutate(richest=(richest/13)*100) %>% 
+  filter(poorest>=25 | poor>=25 | rich>=25 | richest>=25 ) -> cluster_wise_bottom_trim_hall
+
+# heatmap
+patient_enrichments_hall %>% 
+  select(Term, ends_with("_trx")) %>% 
+  rename_with(~str_replace(.,"_trx","")) %>% 
+  filter(Term%in%cluster_wise_bottom_trim_hall$Pathways) %>% 
+  column_to_rownames("Term") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients, -consensuscluster) %>% 
+  group_by(ecm_type) %>% 
+  summarize_all(mean, na.rm=T) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  select(poorest, poor, rich,richest) %>% 
+  rownames_to_column("Term") %>% 
+  filter(str_detect(Term, "Allograft Rejection")|
+          str_detect(Term, "Angiogenesis")|
+          str_detect(Term, "Apical Junction")|
+          str_detect(Term, "Apoptosis")|
+          str_detect(Term, "Coagulation")|
+          str_detect(Term, "Complement")|
+          str_detect(Term, "Epithelial Mesenchymal")|
+          str_detect(Term, "Hedgehog")|
+          str_detect(Term, "Hypoxia")|
+          str_detect(Term, "IL-6")|
+          str_detect(Term, "Inflammatory")|
+          str_detect(Term, "KRAS")|
+          str_detect(Term, "PI3K")|
+          str_detect(Term, "TGF")|
+          str_detect(Term, "TNF")|
+          str_detect(Term, "Wnt")|
+          str_detect(Term, "p53")|
+          str_detect(Term, "DNA Repair")|
+          str_detect(Term, "Glycolysis")) %>% 
+  column_to_rownames("Term") -> picked_halls
+
+colnames(picked_halls)=c('ECM-G1' ,'ECM-G2' , 'ECM-G3', 'ECM-G4')
+
+df=data.frame(`ECM Grade` = c('ECM-G1', 'ECM-G2', 'ECM-G3', 'ECM-G4')) %>% rename("ECM Grade"="ECM.Grade")
+
+col_anno_code = HeatmapAnnotation(df = df,
+                                  col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                                  annotation_name_gp = gpar(fontsize=15,fontface = "bold"),
+                                  annotation_legend_param = list(`ECM Grade` = list(  title = "ECM Grade",  title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15))),
+                                  show_legend = T)
+
+cluster_wise_bottom_trim_hall %>% 
+  filter(Pathways%in%rownames(picked_halls)) %>% 
+  column_to_rownames("Pathways") %>% 
+  select('ECM-G1'= 1 ,'ECM-G2'=2 , 'ECM-G3'=3, 'ECM-G4'=4) -> percentages
+
+picked_halls[rownames(percentages),] -> scores
+
+annotate_percentage <- function(scores, percentages) {
+  annotations <- matrix("", nrow = nrow(scores), ncol = ncol(scores))
+  for (i in 1:nrow(scores)) {
+    if (percentages$'ECM-G1'[i] < 25) annotations[i, 1] <- "*"
+    if (percentages$'ECM-G2'[i] < 25) annotations[i, 2] <- "*"
+    if (percentages$'ECM-G3'[i] < 25) annotations[i, 3] <- "*"
+    if (percentages$'ECM-G4'[i] < 25) annotations[i, 4] <- "*"
+  }
+  return(annotations)
+}
+
+annotations <- annotate_percentage(scores, percentages)
+
+scores %>% 
+  Heatmap(cluster_columns = F,
+          cluster_rows = T,
+          show_row_dend = F,
+          show_column_names = F,
+          col = colorRamp2(c(-0.5,0,0.5),c("navy","white","maroon4")),
+          height=1*unit(100,"mm"),
+          width=1*unit(30,"mm"),
+          column_names_rot = 0,
+          column_names_centered = T,
+          row_names_gp = gpar(fontsize=15),
+          name = "Enrichment\nScore",
+          top_annotation = col_anno_code,
+          column_title = "Hallmarks",
+          column_title_side = "top", 
+          column_title_gp = gpar(fontsize=20, fontface="bold"),
+          show_row_names = T,
+          show_heatmap_legend = T,
+          heatmap_legend_param = list(title = "Enrichment\nScore", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15)),
+          cell_fun = function(j, i, x, y, width, height, fill) {grid.text(annotations[i, j], x, y, gp = gpar(fontsize = 15, col = "black"))}) -> ptx_heat
+
+
+draw(ptx_heat, merge_legend = T, heatmap_legend_side="left")
+
+```
+
+# Significantly enriched Hallmark pathways across ECM grades (Figure 5 i-k)
+
+```{r}
+patient_enrichments_hall %>% 
+  filter(str_detect(Term,"Angiogenesis")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("Angiogenesis") -> h1
+
+patient_enrichments_hall %>% 
+  filter(str_detect(Term,"Epithelial")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("EMT") -> h2
+
+patient_enrichments_hall %>% 
+  filter(str_detect(Term,"Hypoxia")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("Hypoxia") -> h3
+
+patient_enrichments_hall %>% 
+  filter(str_detect(Term,"KRAS")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color="black"),
+        axis.text.y = element_text(size=20, color="black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4"))+
+  border(color="black") +
+  ylab("KRAS Signaling Up") -> h4
+
+h1+h2+h3+h4
+```
+
+```{r}
+patient_enrichments_hall %>% 
+  filter(str_detect(Term,"KRAS")) %>% 
+  select(ends_with("_trx")) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  mutate(patients=str_replace(patients, "_trx", "")) %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) -> df
+
+kruskal.test(V1 ~ ecm_type, data = df)
+```
+
+## $$ PATHWAY ENRICHMENT ANALYSIS END $$
+
+## $$ TF ENRICHMENT ANALYSIS START $$
+
+```{r}
+all_tfs=data.frame(name=as.character())
+
+for (i in momix_cluster_annotation$patients) {
+  
+  read_tsv(paste0("out_data/terminals/",i,".tsv")) %>% 
+    filter(Category=="TF") %>% 
+    select(1) %>% 
+    mutate(x=1)%>% 
+    rename_with(~i, .cols = x) -> ptfs
+  
+  all_tfs=full_join(all_tfs, ptfs, by="name")
+  
+}
+
+all_tfs %>% mutate_all(~replace_na(.,0)) %>% rename("TFs"=name) -> all_tfs  
+
+#all_tfs %>% write_csv("out_data/lists/all_tfs.csv")
+all_tfs=read_csv("out_data/lists/all_tfs.csv")
+
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%all_tfs$TFs) -> all_tfs_wdata
+```
+
+# Show TFs enriched across ECM grades (Figure 5 h)
+
+```{r}
+all_tfs %>% 
+  filter(!TFs%in%c("ZNF300","CREM","NCOA3","GLI2", "NKX2-1")) %>% 
+  column_to_rownames("TFs") %>% 
+  select(momix_cluster_annotation$patients) %>% 
+  #filter(rowSums(.)<75) %>% 
+  #filter(rowSums(.)>25) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients, -consensuscluster, -`ECM Grade`) %>% 
+  select("ecm_type", everything(.)) %>% 
+  group_by(ecm_type) %>% 
+  summarise_all(sum) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("TFs") %>% 
+  mutate(poorest=(poorest/21)*100) %>% 
+  mutate(poor=(poor/35)*100) %>% 
+  mutate(rich=(rich/32)*100) %>% 
+  mutate(richest=(richest/13)*100) %>% 
+  filter(poorest>=25 | poor>=25 | rich>=25 | richest>=25 ) %>% 
+  select(TFs, poorest, poor, rich, richest)-> tfsubset
+  
+trx_zscores_raw %>% 
+  filter(Hugo_Symbol%in%tfsubset$TFs) %>% 
+  select(Hugo_Symbol,momix_cluster_annotation$patients) %>% 
+  column_to_rownames("Hugo_Symbol") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("patients") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(-patients, -consensuscluster, -`ECM Grade`) %>% 
+  select(ecm_type,everything()) %>% 
+  group_by(ecm_type) %>% 
+  summarise_all(median, na.rm=T) %>% 
+  column_to_rownames("ecm_type") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("TFs") %>% 
+  mutate(keep=ifelse((richest>=rich & rich>=poor & poor>=poorest) | (richest<=rich & rich<=poor & poor<=poorest),"yes","no")) %>%  # Trend filtering
+  #mutate(keep=ifelse((richest>=rich & poor>=poorest & richest>=poorest) | (richest<=rich & poor<=poorest & richest<=poorest),"yes","no")) %>%  # Soft trend filtering
+  filter(keep=="yes") %>% 
+  select(-keep) %>%  
+  column_to_rownames("TFs")%>% 
+  select(poorest, poor, rich, richest) -> final_tfs
+
+colnames(final_tfs)=c('ECM-G1' ,'ECM-G2' , 'ECM-G3', 'ECM-G4')
+
+df=data.frame(`ECM Grade` = c('ECM-G1', 'ECM-G2', 'ECM-G3', 'ECM-G4')) %>% rename("ECM Grade"="ECM.Grade")
+
+heatanno=HeatmapAnnotation(df = df,
+                           col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                           annotation_name_gp = gpar(fontsize=15,fontface = "bold"),
+                           annotation_legend_param = list(`ECM Grade` = list(title = "ECM Grade",  title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15))))
+
+tfsubset %>% 
+  filter(TFs%in%rownames(final_tfs)) %>% 
+  column_to_rownames("TFs") %>% 
+  select('ECM-G1'= 1 ,'ECM-G2'=2 , 'ECM-G3'=3, 'ECM-G4'=4) -> percentages
+
+final_tfs[rownames(percentages),] -> scores
+
+annotate_percentage <- function(scores, percentages) {
+  annotations <- matrix("", nrow = nrow(scores), ncol = ncol(scores))
+  for (i in 1:nrow(scores)) {
+    if (percentages$'ECM-G1'[i] < 25) annotations[i, 1] <- "*"
+    if (percentages$'ECM-G2'[i] < 25) annotations[i, 2] <- "*"
+    if (percentages$'ECM-G3'[i] < 25) annotations[i, 3] <- "*"
+    if (percentages$'ECM-G4'[i] < 25) annotations[i, 4] <- "*"
+  }
+  return(annotations)
+}
+
+annotations <- annotate_percentage(scores, percentages)
+
+scores %>% 
+  Heatmap(cluster_columns = F,
+          show_column_names = F,
+          cluster_rows = T,
+          show_row_dend = F,
+          width = unit(30,"mm"),
+          column_names_centered = T,
+          column_title = "TFs",
+          column_title_gp = gpar(fontsize=20, fontface="bold"),
+          height = unit(100,"mm"),
+          name = "Enrichment\nScore",
+          row_names_gp = gpar(fontsize=15),
+          col = colorRamp2(c(-0.5,0,0.5), c("navy", "white", "maroon4")),
+          top_annotation = heatanno,
+          heatmap_legend_param = list(title = "Enrichment\nScore", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15)),
+          cell_fun = function(j, i, x, y, width, height, fill) {grid.text(annotations[i, j], x, y, gp = gpar(fontsize = 20, col = "black"))}) -> tf_heat
+
+
+draw(tf_heat, merge_legend = T) 
+
+```
+
+# Check difference in expression scores of some TFs across ECM grades (Figure 5 i-k, Supp. Figure 5 c)
+
+```{r}
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="TWIST1") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black") +
+  ylab("TWIST1") -> TWIST1
+
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="SNAI2") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black") +
+  ylab("SNAI2") -> SNAI2
+
+TWIST1+SNAI2
+
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="FOXA2") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black") +
+  ylab("FOXA2") -> FOXA2
+
+FOXA2
+
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="HIF1A") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black") +
+  ylab("HIF1A") -> HIF1A
+
+HIF1A
+
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="TCF4") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  ggplot(aes(x=ecm_type, y=V1, fill=ecm_type))+
+  geom_boxplot()+
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6)+
+  stat_compare_means(comparisons = list(c("poorest","poor"), c("poor","rich"), c("rich","richest"), c("poorest","rich"), c("poor","richest"), c("poorest","richest")),
+                     aes(label = ..p.signif..), size=5,
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, Inf), symbols = c( "***", "**", "*", "ns")))+
+  theme_minimal()+
+  theme(axis.text.x = element_text(size=20, angle = 45, hjust=1, color = "black"),
+        axis.text.y = element_text(size=20, color = "black"),
+        axis.title.y = element_text(size=25, face="bold"),
+        axis.title.x = element_blank(),
+        line = element_blank(),
+        legend.position = "none")+
+  scale_fill_manual(values = c('poorest' = '#B6CEC7','poor' = '#86A3C3', 'rich'='#7268A6', 'richest'='#6B3074')) +
+  scale_x_discrete(labels = c("poorest" = "ECM-G1", "poor" = "ECM-G2", "rich" = "ECM-G3", "richest" = "ECM-G4")) +
+  border(color="black") +
+  ylab("TCF4") -> TCF4
+
+```
+
+
+```{r}
+all_tfs_wdata %>%
+  filter(Hugo_Symbol=="FOXA2") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  filter(!is.na(V1)) %>% 
+  rownames_to_column("patients") %>% 
+  filter(patients!="Hugo_Symbol") %>% 
+  inner_join(momix_cluster_annotation) %>% 
+  select(ecm_type, V1) %>% 
+  mutate(V1=as.numeric(V1)) %>% 
+  mutate(ecm_type=as.factor(ecm_type))-> df 
+
+kruskal.test(V1 ~ ecm_type, data = df)
+```
+
+## $$ TF ENRICHMENT ANALYSIS END $$
+
+# $ About Network Proximity
+
+```{r}
+# Fix drugbank data for network proximity analysis
+drug_targets=read_csv("data/DRUGBANK_14_03_2024/uniprot links.csv")
+drug_target_ids=read_csv("data/DRUGBANK_14_03_2024/all.csv") %>% 
+  filter(Species=="Humans") %>% 
+  select(`UniProt ID`, `Gene Name`)
+  
+drug_links=read_csv("data/DRUGBANK_14_03_2024/drug links.csv")
+approved=read_csv("data/DRUGBANK_14_03_2024/drug links_approved.csv")
+
+drug_targets %>% 
+  select("ID"=`DrugBank ID`, `UniProt ID`) %>% 
+  inner_join(drug_target_ids, by = "UniProt ID") %>% 
+  distinct() %>% 
+  select(-`UniProt ID`) %>% 
+  group_by(ID) %>% 
+  summarize(Drug_Proteins=paste(`Gene Name`, collapse = ";")) %>% 
+  ungroup() %>% 
+  mutate(Number_of_Genes=str_count(Drug_Proteins, ";")+1) %>% 
+  arrange(desc(Number_of_Genes)) %>% 
+  select(ID, Number_of_Genes) %>%  
+  count(Number_of_Genes) %>% 
+  filter(Number_of_Genes >= 1 & Number_of_Genes <= 100) %>% 
+  ggplot(aes(x=Number_of_Genes, y=n)) +
+  geom_bar(stat = "identity", width = 1) +
+  ylab("Count") 
+
+drug_targets %>% 
+  select("ID"=`DrugBank ID`, `UniProt ID`) %>% 
+  inner_join(drug_target_ids, by = "UniProt ID") %>% 
+  distinct() %>% 
+  select(-`UniProt ID`) %>% 
+  na.omit(.) %>% 
+  group_by(ID) %>% 
+  summarize(Drug_Proteins=paste(`Gene Name`, collapse = ";")) %>% 
+  ungroup() %>% 
+  mutate(Number_of_Genes=str_count(Drug_Proteins, ";")+1) %>% 
+  filter(Number_of_Genes<26) # %>% write_csv("out_data/network_data/drug_proteins.csv")
+```
+
+# Oncotargets
+
+```{r}
+oncotargets_pre=readxl::read_xlsx("data/lists/oncotreat_list.xlsx", skip = 2) 
+
+d_count=max(str_count(oncotargets_pre$`Potential Drugs`, ";"), na.rm=T) +1
+
+oncotargets_pre %>% 
+  separate("Potential Drugs", into = paste0("d_", seq_len(d_count), sep=";")) %>% 
+  pivot_longer(cols = starts_with("d_"), names_to = "Drug", values_to = "Molecule") %>% 
+  select(-Drug) %>% 
+  mutate(Molecule=trimws(Molecule)) %>% 
+  filter(!is.na(Molecule)) -> oncotargetlist 
+```
+
+
+# Analyze proximity results (Figure 6 c)
+
+```{r}
+prox_results=read_csv("out_data/network_data/consensus_insol/proximity_results_insol.csv")
+
+prox_results %>% 
+  separate(dc_pair, c("drug", "ecm_type"), sep = "_") %>% 
+  select(-d, -mean, -sd) %>% 
+  pivot_wider(names_from = ecm_type, values_from = z ) %>% 
+  filter(drug%in%approved$`DrugBank ID`) %>% 
+  inner_join(drug_links, by=c("drug"="DrugBank ID")) %>% 
+  select(1:6) %>% 
+  select(Name, poorest, poor, rich, richest, -drug) %>% 
+  filter(Name%in%oncotargetlist$Molecule)  %>%
+  rowwise() %>%
+  mutate(variance = var(c_across(where(is.numeric)))) %>% 
+  arrange(desc(variance)) %>% 
+  filter(min(c_across(c(poorest, poor, rich, richest))) <= -1) %>%
+  ungroup()  -> oncotarget_drugs
+
+oncotarget_drugs %>% 
+  select(-variance) %>% 
+  column_to_rownames("Name") %>% 
+  filter(rowSums(.<=-2, na.rm=T)==2 | rowSums(.<=-2, na.rm=T)==1 ) %>% 
+  rownames_to_column("name") -> int_filt
+
+oncotarget_drugs %>% 
+  filter(variance>0.4) %>% 
+  select(-variance) %>% 
+  column_to_rownames("Name") %>% 
+  mutate(keep=ifelse((richest>=rich & poor>=poorest & richest>=poorest) | (richest<=rich & poor<=poorest & richest<=poorest),"yes","no")) %>% 
+  filter(keep=="yes") %>% 
+  select(-keep) %>% 
+  rownames_to_column("name") -> soft_trend2 
+
+oncotarget_drugs %>% 
+  filter(variance>0.4) %>% 
+  select(-variance) %>% 
+  column_to_rownames("Name") %>% 
+  mutate(keep=ifelse((richest>=rich & rich>=poor & poor>=poorest) | (richest<=rich & rich<=poor & poor<=poorest),"yes","no")) %>% 
+  filter(keep=="yes") %>% 
+  select(-keep) %>% 
+  rownames_to_column("name") -> harsh_trend2 
+
+
+df=data.frame(`ECM Grade` = c('ECM-G1', 'ECM-G2', 'ECM-G3', 'ECM-G4')) %>% rename("ECM Grade"="ECM.Grade")
+
+row_anno_code = rowAnnotation(df = df,
+                                  col = list("ECM Grade" = c('ECM-G1' = '#B6CEC7','ECM-G2' = '#86A3C3', 'ECM-G3'='#7268A6', 'ECM-G4'='#6B3074')),
+                                  annotation_name_gp = gpar(fontsize=15,fontface = "bold"),
+                                  annotation_legend_param = list(`ECM Grade` = list(  title = "ECM Grade",  
+                                                                                      title_gp = gpar(fontface="bold", fontsize = 15), 
+                                                                                      labels_gp = gpar(fontsize = 15))))
+
+
+int_filt %>%  
+  full_join(soft_trend2) %>% 
+  full_join(harsh_trend2) %>% 
+  column_to_rownames("name") %>% 
+  select("ECM-G1"=poorest, "ECM-G2"=poor,"ECM-G3"=rich,"ECM-G4"=richest) %>% 
+  t() %>% 
+  Heatmap(cluster_rows = F,
+          cluster_columns = T,
+          show_row_dend = F,
+          show_column_dend = F,
+          width = 1*unit(200,"mm"),
+          height = 1*unit(50,"mm"),
+          column_names_rot = 45,
+          row_names_gp = gpar(fontsize=20, fontface="bold"),
+          show_row_names = F,
+          column_names_gp = gpar(fontsize=15),
+          rect_gp = gpar("grey65"),
+          name = "proximity",
+          right_annotation = row_anno_code,
+          column_title = "",
+          column_title_gp = gpar(fontsize=20, fontface="bold"),
+          heatmap_legend_param = list(title = "Proximity", title_gp = gpar(fontface="bold", fontsize = 15), labels_gp = gpar(fontsize = 15)),
+          col = colorRamp2(c(-0.5,-4), c("white", "navy")))
+
+```
+
+# Supp. Figure 5 d
+
+```{r}
+dbs <- c("MSigDB_Hallmark_2020") 
+
+  
+enriched <- enrichr(consensus_nodes_core$richest, dbs) 
+  
+enriched[[1]] %>% 
+  filter(Adjusted.P.value<=0.05) %>%  
+  filter(!str_detect(Overlap, "2/")) %>% 
+  mutate(adjp=-log10(Adjusted.P.value)) %>% 
+  mutate(Term = str_replace(Term, " R-HSA-\\d+", "")) %>%
+  ggplot( aes(x = adjp, y = reorder(Term, adjp), fill = adjp)) +
+  geom_bar(stat = "identity", color="grey65")+ 
+  scale_fill_gradient(low = "white", high="#6B3074")+
+  xlab("-log10(Adjusted.P.value)")+
+  ylab("")+
+  labs(fill = "-log10(p-adj)")+
+  ggtitle("Hallmark Pathways")+
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(color = "grey65"),
+        panel.grid.minor.x = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill = NA, color = "grey65"),
+        axis.ticks.y = element_blank(),
+        axis.text.y.right = element_text(size=15, colour = "black"),
+        legend.position="none",
+        title = element_text(size=15, face="bold"),
+        axis.text.x = element_text(size=15, colour = "black"),
+        axis.title.y = element_text(size=15),
+        axis.title.x = element_text(size=15, face="bold"))+
+  scale_x_continuous(limits = c(0, 13), expand = c(0, 0))+
+  scale_y_discrete(position = "right") 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
