@@ -90,7 +90,9 @@ ecm_grades/
 \### R
 
 > R (>= 4.1)
+
 > rmarkdown
+
 > tidyverse
 > readxl
 > ggstatsplot
