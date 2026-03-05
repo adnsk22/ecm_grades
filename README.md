@@ -180,27 +180,27 @@ Outputs will be written to the working directory..
 
 
 
-## Downstream analyses.
+## Downstream analyses
 
 
 
-main.rmd contains the codes for the 
+main.rmd contains the codes for the; 
 
 
 
-\* processing of some of the input data for the network modeling, and proximity analyses such as terminal preparation, PPI reference interactome and drug filtering, 
+- processing of some of the input data for the network modeling, and proximity analyses such as terminal preparation, PPI reference interactome and drug filtering, 
 
-\* analysis of the multi-omic data, 
+-  analysis of the multi-omic data, 
 
-\* generation of ECM barcoding, and ECM based clustering of the patients, 
+- generation of ECM barcoding, and ECM based clustering of the patients, 
 
-\* pathway enrichment analyses, 
+-  pathway enrichment analyses, 
 
-\* clinical data analyses, 
+-  clinical data analyses, 
 
-\* cellular deconvolution analyses and 
+-  cellular deconvolution analyses and 
 
-\* generation of all of the figures in the article
+-  generation of all of the figures in the article
 
 
 
