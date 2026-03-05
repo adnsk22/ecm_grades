@@ -1,8 +1,8 @@
-\# ecm\_grades
+\# ecm_grades
 
 
 
-!\[Workflow diagram](workflow.tif)
+!\[Workflow diagram](workflow.png)
 
 
 
