@@ -20,47 +20,47 @@ This repository contains data processing, patient ECM barcoding and stratificati
 
 ```
 
-ecm\_grades/
+ecm_grades/
 
 ├── data/ (Raw and/or preprocessed input data.)
 
-│   └── DRUGBANK\_14\_03\_2024/ (Drug data used for network proximity analysis including FDA approved drugs, drug target proteins and relevant annotations.)
+│   └── DRUGBANK_14_03_2024/ (Drug data used for network proximity analysis including FDA approved drugs, drug target proteins and relevant annotations.)
 
-│   └── cbioportal/luad\_cptac\_2020/ (Omic and clinical data processed by CBioPortal.)
+│   └── cbioportal/luad_cptac_2020/ (Omic and clinical data processed by CBioPortal.)
 
 │   └── clinical-cptac-3.2023-10-02/ (Survival and recurrence data of patients retrieved from CPTAC.)
 
 │   └── lists/ (List of genes and drugs used in the study including Matrisome genes, cancer-associated pathway genes and oncotreat drug list.)
 
-│   └── raw\_data/ (Raw omic data retrieved directly from the supplementary data from Gillette et al. (2020).)
+│   └── raw_data/ (Raw omic data retrieved directly from the supplementary data from Gillette et al. (2020).)
 
-│   └── reference\_interactome/ (Raw and processed reference PPI interactome used in network analyses.)
+│   └── reference_interactome/ (Raw and processed reference PPI interactome used in network analyses.)
 
-├── network\_modeling/ (Scripts and notebooks for building ECM guided patient-specific networks)
+├── network_modeling/ (Scripts and notebooks for building ECM guided patient-specific networks)
 
 │   └── patients/ (Contains directories for each patient which include patient-specific networks, OmicsIntegrator2 solutions for every parameter combination.)
 
 │   └── reference/ (Processed reference PPI interactome.)
 
-│   └── scripts/ (Includes the auxilary scripts for generating OI2 solutions(get\_memberships.py), selecting the most optimal parameter combinations(get\_parameterlist.R) and reconstructing the final network from the most optimal parameter combinations(get\_networks.py))
+│   └── scripts/ (Includes the auxilary scripts for generating OI2 solutions(get_memberships.py), selecting the most optimal parameter combinations(get_parameterlist.R) and reconstructing the final network from the most optimal parameter combinations(get_networks.py))
 
 │   └── terminals/ (Contains prize files for each patient.)
 
-│   └── final\_parameter\_list.csv (Generated csv file containing the optimal parameter combinations for each patient.)
+│   └── final_parameter_list.csv (Generated csv file containing the optimal parameter combinations for each patient.)
 
-│   └── ecm\_run.sh (Bash script that runs the auxilary scripts as a pipeline.)
+│   └── ecm_grades.sh (Bash script that runs the auxilary scripts as a pipeline.)
 
-│   └── ecm\_momix.yml (Conda environment necessary to run the process.)
+│   └── ecm_momix.yml (Conda environment necessary to run the process.)
 
-├── network\_proximity/ (Inputs and codes for the network proximity analysis)
+├── network_proximity/ (Inputs and codes for the network proximity analysis)
 
-│   └── input\_data/ (Contains processed reference PPI interactome, ECM consensus networks, processed drug-target data.)
+│   └── input_data/ (Contains processed reference PPI interactome, ECM consensus networks, processed drug-target data.)
 
-│   └── network\_proximity\_pool.py (Python script for running the network proximity analysis.)
+│   └── network_proximity_pool.py (Python script for running the network proximity analysis.)
 
-│   └── proximity\_results\_insol.csv (CSV file containing relative proximity values between ECM consensus networks and drug targets.)
+│   └── proximity_results_insol.csv (CSV file containing relative proximity values between ECM consensus networks and drug targets.)
 
-├── out\_data/ (Generated outputs (networks, tables, figures))
+├── out_data/ (Generated outputs (networks, tables, figures))
 
 │   └── TRRUST/ (TF enrichment results for each patient obtained from TRRUST)
 
@@ -68,17 +68,17 @@ ecm\_grades/
 
 │   └── lists/ (Contains outputs of omic data analysis such as foldchange values and normalized expression data. Also contains both multi-omic and single-omic patient-specific ECM barcodes.)
 
-│   └── network\_data/ (Contains outputs of network data analysis such as average cost, edge, node and terminal counts.)
+│   └── network_data/ (Contains outputs of network data analysis such as average cost, edge, node and terminal counts.)
 
-│   └── pptx\_data/ (Contains differentially phosphorylated ECM proteins for each patient later included in terminal list along with TFs.)
+│   └── pptx_data/ (Contains differentially phosphorylated ECM proteins for each patient later included in terminal list along with TFs.)
 
 │   └── terminals/ (Contains terminals for each patient.)
 
-│   └── trx\_data/ (Contains differentially expressed ECM genes for each patient used for TF enrichment analysis.)
+│   └── trx_data/ (Contains differentially expressed ECM genes for each patient used for TF enrichment analysis.)
 
-├── patients\_all/ (graphml files of ECM guided patient-specific networks.)
+├── patients_all/ (graphml files of ECM guided patient-specific networks.)
 
-├── consensus\_networks.py (Python script to construct consensus networks)
+├── consensus_networks.py (Python script to construct consensus networks)
 
 ├── main.rmd (Main analysis workflow (R Markdown))
 
@@ -170,13 +170,13 @@ ecm\_grades/
 
 
 
-Set network\_modeling as working directory and activate the ecm\_momix environment provided as ecm\_momix.yml. Place prize files for each patient in `terminals/` and the reference interactome to `reference/` and run the bash script
+Set network_modeling as working directory and activate the ecm_momix environment provided as ecm_momix.yml. Place prize files for each patient in `terminals/` and the reference interactome to `reference/` and run the bash script
 
 
 
 ```bash
 
-bash ecm\_grades.sh
+bash ecm_grades.sh
 
 ```
 
@@ -188,17 +188,17 @@ Outputs will be written to `patients/`.
 
 
 
-Set ecm\_grades as working directory. Patient-specific networks should be under `patients\_all/` in .graphml format, ECM grade annotations are provided under `out\_data/lists/`. Run consensus\_networks.py
+Set ecm_grades as working directory. Patient-specific networks should be under `patients_all/` in .graphml format, ECM grade annotations are provided under `out_data/lists/`. Run consensus_networks.py
 
 
 
 ```bash
 
-python consensus\_networks.py
+python consensus_networks.py
 
 ```
 
-Outputs will be written to `out\_data/network\_data/`.
+Outputs will be written to `out_data/network_data/`.
 
 
 
@@ -206,13 +206,13 @@ Outputs will be written to `out\_data/network\_data/`.
 
 
 
-Set network\_proximity as working directory and activate the proximity environment provided as proximity.yml. Place reference PPI interactome, consensus networks and drug-target data in `input\_data/` and run python script.
+Set network_proximity as working directory and activate the proximity environment provided as proximity.yml. Place reference PPI interactome, consensus networks and drug-target data in `input_data/` and run python script.
 
 
 
 ```bash
 
-python network\_proximity\_pool.py
+python network_proximity_pool.py
 
 ```
 
@@ -244,9 +244,9 @@ main.rmd contains the codes for the
 
 
 
-main.rmd can be runned in RStudio
+You can run main.rmd using RStudio.
 
-All generated files from this script are saved under `out\_data/` with self-descriptive filenames.
+All generated files from this script are saved under `out_data/` with self-descriptive filenames.
 
 
 
