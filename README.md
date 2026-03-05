@@ -1,4 +1,4 @@
-#**ECM GRADES**
+# **ECM GRADES**
 
 <img src="https://github.com/user-attachments/assets/ff81c86d-8abf-411f-8771-07d47dbd5b61" alt="Workflow diagram" width="600">
 
@@ -89,37 +89,34 @@ ecm_grades/
 
 ### R
 
-R (>= 4.1)
-rmarkdown
-tidyverse
-readxl
-ggstatsplot
-ggpubr
-M3C
-vegan
-survival
-survminer
-immunedeconv
-enrichR
-ComplexHeatmap
-patchwork
-circlize
-reshape2
-ggforestplot
-ggvenn
-gridExtra
+- R (>= 4.1)
+- rmarkdown
+- tidyverse
+- readxl
+- ggstatsplot
+- ggpubr
+- M3C
+- vegan
+- survival
+- survminer
+- immunedeconv
+- enrichR
+- ComplexHeatmap
+- patchwork
+- circlize
+- reshape2
+- ggforestplot
+- ggvenn
+- gridExtra
 
 ### Python
 
-Python (>=2.7)
-OmicsIntegrator
-numpy
-pandas
-networkx
-sys
-pandas
-networkx
-
+- Python (>=2.7)
+- OmicsIntegrator
+- numpy
+- pandas
+- networkx
+- sys
 
 > Exact package versions used in the analysis are provided in the supplementary tables associated with the manuscript and the conda environments are provided as .yml .
 
