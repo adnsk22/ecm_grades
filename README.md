@@ -1,8 +1,7 @@
 \# ecm_grades
 
 
-
-!\[Workflow diagram](workflow.png)
+<img width="3024" height="1284" alt="workflow" src="https://github.com/user-attachments/assets/ff81c86d-8abf-411f-8771-07d47dbd5b61" />
 
 
 
