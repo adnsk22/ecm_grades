@@ -1,8 +1,8 @@
-**ECM GRADES**
+#**ECM GRADES**
 
 <img src="https://github.com/user-attachments/assets/ff81c86d-8abf-411f-8771-07d47dbd5b61" alt="Workflow diagram" width="600">
 
-\## Overview
+## Overview
 
 
 
@@ -10,7 +10,7 @@ This repository contains data processing, patient ECM barcoding and stratificati
 
 
 
-\## Repository structure
+## Repository structure
 
 
 
@@ -83,56 +83,53 @@ ecm_grades/
 
 
 
-\## Requirements
+## Requirements
 
 
 
-\### R
+### R
 
-> R (>= 4.1)
+R (>= 4.1)
+rmarkdown
+tidyverse
+readxl
+ggstatsplot
+ggpubr
+M3C
+vegan
+survival
+survminer
+immunedeconv
+enrichR
+ComplexHeatmap
+patchwork
+circlize
+reshape2
+ggforestplot
+ggvenn
+gridExtra
 
-> rmarkdown
+### Python
 
-> tidyverse
-> readxl
-> ggstatsplot
-> ggpubr
-> M3C
-> vegan
-> survival
-> survminer
-> immunedeconv
-> enrichR
-> ComplexHeatmap
-> patchwork
-> circlize
-> reshape2
-> ggforestplot
-> ggvenn
-> gridExtra
-
-\### Python
-
->  Python (>=2.7)
->  OmicsIntegrator
-> numpy
-> pandas
-> networkx
-> sys
->  pandas
->  networkx
-
+Python (>=2.7)
+OmicsIntegrator
+numpy
+pandas
+networkx
+sys
+pandas
+networkx
 
 
 > Exact package versions used in the analysis are provided in the supplementary tables associated with the manuscript and the conda environments are provided as .yml .
 
 
 
-\## How to run
+## How to run
 
 
 
-\### Network modeling
+### Network modeling
 
 
 
@@ -150,7 +147,7 @@ Outputs will be written to `patients/`.
 
 
 
-\### Building consensus networks
+### Building consensus networks
 
 
 
@@ -168,7 +165,7 @@ Outputs will be written to `out_data/network_data/`.
 
 
 
-\### Network proximity
+### Network proximity
 
 
 
@@ -186,7 +183,7 @@ Outputs will be written to the working directory..
 
 
 
-\## Downstream analyses.
+## Downstream analyses.
 
 
 
