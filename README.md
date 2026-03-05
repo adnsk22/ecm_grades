@@ -59,6 +59,7 @@ ecm_grades/
 │   └── network_proximity_pool.py (Python script for running the network proximity analysis.)
 
 │   └── proximity_results_insol.csv (CSV file containing relative proximity values between ECM consensus networks and drug targets.)
+│   └── proximity.yml (Conda environment necessary to run the process.)
 
 ├── out_data/ (Generated outputs (networks, tables, figures))
 
@@ -80,9 +81,7 @@ ecm_grades/
 
 ├── consensus_networks.py (Python script to construct consensus networks)
 
-├── main.rmd (Main analysis workflow (R Markdown))
-
-└── README.md
+└──  main.rmd (Main analysis workflow (R Markdown))
 
 ```
 
