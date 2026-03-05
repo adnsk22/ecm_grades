@@ -1,4 +1,4 @@
-setwd("/kuacc/users/adansik22/network_modeling/")
+setwd("network_modeling")
 
 library(ComplexHeatmap)
 library(circlize)
@@ -88,23 +88,27 @@ for (i in dirlist){
   dev.off()
 }
 
+
 parameter_list = data.frame(w = numeric(), b = numeric(), g = numeric())
 
 for (i in dirlist){
  opt_data=paste0("patients/", i, "/", i, "_opt_data.csv")
- opt=read.csv(opt_data) %>% 
-  filter(Component_number==1 & Terminal_coverage==1) %>% 
-  filter(w==2 & b==2) %>% # this part may be changed or switched off
-  arrange(Total_nodes) %>% 
-  top_n(2, wt = -Total_nodes) %>% 
-  select(w,b,g)
- rownames(opt)=paste(i, opt$g, sep = "_")
+ opt=read.csv(opt_data) %>%
+  filter(Component_number==1 & Terminal_coverage>0.80) %>%
+  arrange(Total_nodes) %>%
+  slice(1:2) %>% 
+  select(w,b,g) %>%
+  unite("wb",w,b,sep="",remove=F) %>%
+  unite("wbg",wb,g,sep="",remove=F) %>%
+  select(-wb)
+ rownames(opt)=paste(i, opt$wbg, sep = "_")
+ opt=select(opt, -wbg)
  parameter_list=rbind(parameter_list,opt)
 }
 
-g34_parameter_list=parameter_list %>% rownames_to_column("patients")
+final_parameter_list=parameter_list %>% rownames_to_column("patients")
 
 #save
-write_csv(g34_parameter_list, "g34_parameter_list.csv")
+write_csv(final_parameter_list, "final_parameter_list.csv")
 
 

@@ -54,6 +54,7 @@ fi
 # load modules
 
 module load anaconda/2022.10
+module load pcre2/10.23
 module load R/4.2.0
 
 # activate environment
@@ -72,9 +73,9 @@ fi
 
 # run get_parameterlist.R
 
-if [  -s "g34_parameter_list.csv" ] || [ ! -s "patients/C3L.00001/C3L.00001_membership_df.csv" ]  ; then 
+if [  -s "final_parameter_list.csv" ] || [ ! -s "patients/C3L.00001/C3L.00001_membership_df.csv" ]  ; then 
 	echo "Skipping parameter listing"  
-elif [ ! -s "g34_parameter_list.csv" ] && [ -s "patients/C3L.00001/C3L.00001_membership_df.csv" ] ; then 
+elif [ ! -s "final_parameter_list.csv" ] && [ -s "patients/C3L.00001/C3L.00001_membership_df.csv" ] ; then 
 	echo "Starting parameter listing" 
 	R CMD BATCH scripts/get_parameterlist.R  
 	echo "Parameter listing done"
@@ -82,13 +83,14 @@ fi
 
 # run get_networks.py
 
-if [  -s "patients/C3L.00001/C3L.00001_nodes.csv" ] || [ ! -s "g34_parameter_list.csv" ]   ; then 
+if [  -s "patients/C3L.00001/C3L.00001_nodes.csv" ] || [ ! -s "final_parameter_list.csv" ]   ; then 
 	echo "Skipping network construction"  
-elif [ ! -s "patients/C3L.00001/C3L.00001_nodes.csv" ] && [ -s "g34_parameter_list.csv" ] ; then 
+elif [ ! -s "patients/C3L.00001/C3L.00001_nodes.csv" ] && [ -s "final_parameter_list.csv" ] ; then 
 	echo "Starting network construction" 
 	python scripts/get_networks.py  
 	echo "Network construction done"
 fi
+
 
 
 

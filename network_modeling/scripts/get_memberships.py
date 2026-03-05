@@ -9,7 +9,7 @@ import os
 
 #set working directory
 
-os.chdir('/kuacc/users/adansik22/network_modeling/')
+os.chdir('network_modeling')
 
 #get patient ids
 

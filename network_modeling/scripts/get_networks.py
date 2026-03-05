@@ -9,7 +9,7 @@ import os
 
 #set working directory
 
-os.chdir('/kuacc/users/adansik22/network_modeling/')
+os.chdir('network_modeling')
 
 #get patient ids
 
@@ -17,7 +17,7 @@ dirlist=os.listdir("patients/")
 
 #get parameter list
 
-param_path="g34_parameter_list.csv"
+param_path="final_parameter_list.csv"
 parameters=pd.read_csv(param_path, delimiter = ',' )
 
 #construct networks
@@ -54,8 +54,9 @@ for index, row in parameters.iterrows():
 combined_graphs={}
 
 for id in dirlist:
-    g3=forests[f"{id}_3"]
-    g4=forests[f"{id}_4"]
+    matches = [k for k in forests.keys() if k.startswith(id)]
+    g3=forests[matches[0]]
+    g4=forests[matches[1]]
     
     combined_graph=nx.compose(g3,g4)
     
